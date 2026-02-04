@@ -1,23 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { destroySession } from "@/lib/auth";
-import type { ApiResponse } from "@/types";
 
-export async function POST(): Promise<NextResponse<ApiResponse>> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     await destroySession();
 
-    return NextResponse.json({
-      success: true,
-      message: "Logged out successfully",
-    });
+    // Get the origin from the request for proper redirect
+    const origin = request.headers.get("origin") || request.nextUrl.origin;
+
+    // Redirect to login page after logout
+    return NextResponse.redirect(new URL("/login", origin), { status: 303 });
   } catch (error) {
     console.error("Logout error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "An error occurred during logout",
-      },
-      { status: 500 }
-    );
+    // Even on error, redirect to login
+    const origin = request.headers.get("origin") || request.nextUrl.origin;
+    return NextResponse.redirect(new URL("/login", origin), { status: 303 });
   }
 }
