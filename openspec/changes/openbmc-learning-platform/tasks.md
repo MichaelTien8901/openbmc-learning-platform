@@ -134,8 +134,8 @@
 - [x] 9.13 Add manual quiz question creation
 - [x] 9.14 Create content version history viewer
 - [x] 9.15 Implement version restore functionality
-- [ ] 9.16 Add admin role management (editor, admin)
-- [ ] 9.17 Create content analytics dashboard
+- [x] 9.16 Add admin role management (editor, admin)
+- [x] 9.17 Create content analytics dashboard
 - [ ] 9.18 Add low-performing content alerts
 
 ## 10. API Layer
@@ -145,7 +145,7 @@
 - [x] 10.3 Create lessons API (detail, content, complete)
 - [x] 10.4 Implement progress API (get, update, export)
 - [ ] 10.5 Create sandbox API (start, stop, terminal WebSocket)
-- [ ] 10.6 Implement AI bridge API (audio, ask, quiz)
+- [x] 10.6 Implement AI bridge API (audio, ask, quiz)
 - [x] 10.7 Add API rate limiting middleware
 - [x] 10.8 Implement API error handling and logging
 - [ ] 10.9 Create API documentation with OpenAPI spec

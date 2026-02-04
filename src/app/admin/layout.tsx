@@ -55,6 +55,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 >
                   Import
                 </Link>
+                {user.role === "ADMIN" && (
+                  <>
+                    <Link
+                      href="/admin/users"
+                      className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                    >
+                      Users
+                    </Link>
+                    <Link
+                      href="/admin/analytics"
+                      className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                    >
+                      Analytics
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-4">
