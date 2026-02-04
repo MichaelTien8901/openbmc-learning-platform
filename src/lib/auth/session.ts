@@ -47,13 +47,15 @@ export async function getSession(): Promise<SessionUser | null> {
     }
   }
 
-  // Try to refresh using refresh token
+  // Try to verify using refresh token (read-only, no cookie modification)
+  // Token refresh is handled by middleware or route handlers, not here
+  // This prevents "cookies can only be modified in Server Action" errors
   const refreshToken = cookieStore.get(REFRESH_TOKEN_COOKIE)?.value;
   if (refreshToken) {
     const user = await verifyRefreshToken(refreshToken);
     if (user) {
-      // Refresh the session
-      await createSession(user);
+      // Return the user but don't refresh cookies here
+      // The client should call /api/auth/refresh if needed
       return user;
     }
   }
