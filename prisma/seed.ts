@@ -355,6 +355,72 @@ Congratulations! You now have a working OpenBMC development environment.
     },
   });
 
+  // Additional Getting Started lessons
+  const lesson4 = await prisma.lesson.upsert({
+    where: { slug: "first-build" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/03-first-build`,
+      repositoryPath: "docs/01-getting-started/03-first-build.md",
+      displayMode: "IFRAME",
+    },
+    create: {
+      slug: "first-build",
+      title: "Your First OpenBMC Build",
+      description: "Build your first OpenBMC image from source",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/03-first-build`,
+      repositoryPath: "docs/01-getting-started/03-first-build.md",
+      displayMode: "IFRAME",
+      content: "# Your First OpenBMC Build\n\nLearn how to build OpenBMC from source.",
+      difficulty: "BEGINNER",
+      estimatedMinutes: 30,
+      hasCodeExercise: true,
+      published: true,
+    },
+  });
+
+  const lesson5 = await prisma.lesson.upsert({
+    where: { slug: "development-workflow" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/04-development-workflow`,
+      repositoryPath: "docs/01-getting-started/04-development-workflow.md",
+      displayMode: "IFRAME",
+    },
+    create: {
+      slug: "development-workflow",
+      title: "Development Workflow",
+      description: "Learn the OpenBMC development workflow and best practices",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/04-development-workflow`,
+      repositoryPath: "docs/01-getting-started/04-development-workflow.md",
+      displayMode: "IFRAME",
+      content: "# Development Workflow\n\nLearn the recommended development workflow.",
+      difficulty: "BEGINNER",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+
+  const lesson6 = await prisma.lesson.upsert({
+    where: { slug: "qemu-development" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/05-qemu-build`,
+      repositoryPath: "docs/01-getting-started/05-qemu-build.md",
+      displayMode: "IFRAME",
+    },
+    create: {
+      slug: "qemu-development",
+      title: "QEMU Development Environment",
+      description: "Set up and use QEMU for OpenBMC development and testing",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/05-qemu-build`,
+      repositoryPath: "docs/01-getting-started/05-qemu-build.md",
+      displayMode: "IFRAME",
+      content: "# QEMU Development\n\nLearn to use QEMU for testing OpenBMC.",
+      difficulty: "BEGINNER",
+      estimatedMinutes: 35,
+      hasCodeExercise: true,
+      published: true,
+    },
+  });
+
   // Link lessons to path
   await prisma.pathLesson.upsert({
     where: { pathId_lessonId: { pathId: gettingStartedPath.id, lessonId: lesson1.id } },
@@ -374,7 +440,25 @@ Congratulations! You now have a working OpenBMC development environment.
     create: { pathId: gettingStartedPath.id, lessonId: lesson3.id, order: 3 },
   });
 
-  console.log("Created lessons for Getting Started path");
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: gettingStartedPath.id, lessonId: lesson4.id } },
+    update: {},
+    create: { pathId: gettingStartedPath.id, lessonId: lesson4.id, order: 4 },
+  });
+
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: gettingStartedPath.id, lessonId: lesson5.id } },
+    update: {},
+    create: { pathId: gettingStartedPath.id, lessonId: lesson5.id, order: 5 },
+  });
+
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: gettingStartedPath.id, lessonId: lesson6.id } },
+    update: {},
+    create: { pathId: gettingStartedPath.id, lessonId: lesson6.id, order: 6 },
+  });
+
+  console.log("Created lessons for Getting Started path (6 lessons)");
 
   // Create D-Bus lessons
   const dbusLesson1 = await prisma.lesson.upsert({
@@ -432,13 +516,41 @@ In the following lessons, we'll explore methods, signals, and properties in deta
     },
   });
 
+  // Additional D-Bus lessons
+  const dbusLesson2 = await prisma.lesson.upsert({
+    where: { slug: "state-manager" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/03-state-manager-guide`,
+      repositoryPath: "docs/02-architecture/03-state-manager-guide.md",
+      displayMode: "IFRAME",
+    },
+    create: {
+      slug: "state-manager",
+      title: "State Manager Guide",
+      description: "Learn how OpenBMC manages system states via D-Bus",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/03-state-manager-guide`,
+      repositoryPath: "docs/02-architecture/03-state-manager-guide.md",
+      displayMode: "IFRAME",
+      content: "# State Manager Guide\n\nLearn about OpenBMC state management.",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+
   await prisma.pathLesson.upsert({
     where: { pathId_lessonId: { pathId: dbusPath.id, lessonId: dbusLesson1.id } },
     update: {},
     create: { pathId: dbusPath.id, lessonId: dbusLesson1.id, order: 1 },
   });
 
-  console.log("Created D-Bus lessons");
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: dbusPath.id, lessonId: dbusLesson2.id } },
+    update: {},
+    create: { pathId: dbusPath.id, lessonId: dbusLesson2.id, order: 2 },
+  });
+
+  console.log("Created D-Bus lessons (2 lessons)");
 
   // Create Sensor Management lessons
   const sensorLesson1 = await prisma.lesson.upsert({
@@ -537,6 +649,91 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
     },
   });
 
+  // Additional Sensor Management lessons
+  const sensorLesson3 = await prisma.lesson.upsert({
+    where: { slug: "hwmon-sensors" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/02-hwmon-sensors-guide`,
+      repositoryPath: "docs/03-core-services/02-hwmon-sensors-guide.md",
+      displayMode: "IFRAME",
+    },
+    create: {
+      slug: "hwmon-sensors",
+      title: "Hwmon Sensors Guide",
+      description: "Working with Linux hwmon sensors in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/02-hwmon-sensors-guide`,
+      repositoryPath: "docs/03-core-services/02-hwmon-sensors-guide.md",
+      displayMode: "IFRAME",
+      content: "# Hwmon Sensors Guide\n\nLearn about hwmon sensor integration.",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+
+  const sensorLesson4 = await prisma.lesson.upsert({
+    where: { slug: "fan-control" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/04-fan-control-guide`,
+      repositoryPath: "docs/03-core-services/04-fan-control-guide.md",
+      displayMode: "IFRAME",
+    },
+    create: {
+      slug: "fan-control",
+      title: "Fan Control Guide",
+      description: "Configure and manage fan control in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/04-fan-control-guide`,
+      repositoryPath: "docs/03-core-services/04-fan-control-guide.md",
+      displayMode: "IFRAME",
+      content: "# Fan Control Guide\n\nLearn about fan control and thermal management.",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+
+  const sensorLesson5 = await prisma.lesson.upsert({
+    where: { slug: "power-management" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/05-power-management-guide`,
+      repositoryPath: "docs/03-core-services/05-power-management-guide.md",
+      displayMode: "IFRAME",
+    },
+    create: {
+      slug: "power-management",
+      title: "Power Management Guide",
+      description: "Understanding power management in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/05-power-management-guide`,
+      repositoryPath: "docs/03-core-services/05-power-management-guide.md",
+      displayMode: "IFRAME",
+      content: "# Power Management Guide\n\nLearn about power management services.",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+
+  const sensorLesson6 = await prisma.lesson.upsert({
+    where: { slug: "inventory-manager" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/11-inventory-manager-guide`,
+      repositoryPath: "docs/03-core-services/11-inventory-manager-guide.md",
+      displayMode: "IFRAME",
+    },
+    create: {
+      slug: "inventory-manager",
+      title: "Inventory Manager Guide",
+      description: "Managing hardware inventory in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/11-inventory-manager-guide`,
+      repositoryPath: "docs/03-core-services/11-inventory-manager-guide.md",
+      displayMode: "IFRAME",
+      content: "# Inventory Manager Guide\n\nLearn about inventory management.",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 20,
+      published: true,
+    },
+  });
+
   await prisma.pathLesson.upsert({
     where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: sensorLesson1.id } },
     update: {},
@@ -549,7 +746,31 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
     create: { pathId: sensorsPath.id, lessonId: sensorLesson2.id, order: 2 },
   });
 
-  console.log("Created Sensor Management lessons");
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: sensorLesson3.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: sensorLesson3.id, order: 3 },
+  });
+
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: sensorLesson4.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: sensorLesson4.id, order: 4 },
+  });
+
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: sensorLesson5.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: sensorLesson5.id, order: 5 },
+  });
+
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: sensorLesson6.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: sensorLesson6.id, order: 6 },
+  });
+
+  console.log("Created Sensor Management lessons (6 lessons)");
 
   // Create Yocto Recipes lessons
   const recipeLesson1 = await prisma.lesson.upsert({
