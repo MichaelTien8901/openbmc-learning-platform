@@ -7,4 +7,5 @@
 export * from "./types";
 export * from "./client";
 export * from "./citations";
+export * from "./analytics";
 export { getNotebookLMService, RateLimitError } from "./service";

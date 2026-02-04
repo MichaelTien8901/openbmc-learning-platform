@@ -398,3 +398,59 @@ model AIResponseCache {
 
   @@index([expiresAt])
 }
+
+// ============================================================================
+// AI Usage Analytics
+// ============================================================================
+
+model AIUsageEvent {
+  id          String         @id @default(cuid())
+  userId      String?
+  eventType   AIEventType
+  feature     AIFeature
+  lessonId    String?
+  metadata    Json?          // Additional event data (question length, response time, etc.)
+  success     Boolean        @default(true)
+  errorCode   String?
+  latencyMs   Int?           // Response time in milliseconds
+  cached      Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+
+  @@index([userId])
+  @@index([eventType])
+  @@index([feature])
+  @@index([createdAt])
+  @@index([lessonId])
+}
+
+enum AIEventType {
+  QUERY           // Q&A question asked
+  CONTENT_GEN     // Content generation requested
+  QUIZ_GEN        // Quiz generation requested
+  RATE_LIMITED    // Request was rate limited
+  ERROR           // Error occurred
+  FALLBACK        // Fallback response used
+}
+
+enum AIFeature {
+  QA              // Q&A feature
+  CONTENT         // Content generation
+  QUIZ            // Quiz generation
+  TTS             // Text-to-speech
+}
+
+model AIUsageDaily {
+  id              String   @id @default(cuid())
+  date            DateTime @db.Date
+  feature         AIFeature
+  totalRequests   Int      @default(0)
+  successCount    Int      @default(0)
+  errorCount      Int      @default(0)
+  cacheHits       Int      @default(0)
+  rateLimitCount  Int      @default(0)
+  avgLatencyMs    Float?
+  uniqueUsers     Int      @default(0)
+
+  @@unique([date, feature])
+  @@index([date])
+}

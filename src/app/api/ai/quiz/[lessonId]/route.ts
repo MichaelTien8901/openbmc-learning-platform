@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { getNotebookLMService } from "@/lib/notebooklm";
+import { getNotebookLMService, trackAIEvent } from "@/lib/notebooklm";
 import type { ApiResponse } from "@/types";
 
 interface GeneratedQuizResponse {
@@ -65,6 +65,7 @@ export async function GET(
 
     // Get NotebookLM service
     const service = getNotebookLMService();
+    const startTime = Date.now();
 
     // Get or generate quiz
     const quiz = await service.getQuiz(
@@ -73,6 +74,8 @@ export async function GET(
       lesson.title,
       forceRegenerate
     );
+
+    const latencyMs = Date.now() - startTime;
 
     // If no questions generated, try to get manual questions from database
     if (quiz.questions.length === 0) {
@@ -86,6 +89,21 @@ export async function GET(
       });
 
       if (manualQuestions.length > 0) {
+        // Track fallback to manual questions
+        await trackAIEvent({
+          userId: session.id,
+          eventType: "FALLBACK",
+          feature: "QUIZ",
+          lessonId: lesson.id,
+          success: true,
+          latencyMs,
+          cached: true,
+          metadata: {
+            questionCount: manualQuestions.length,
+            source: "manual",
+          },
+        });
+
         return NextResponse.json({
           success: true,
           data: {
@@ -102,6 +120,21 @@ export async function GET(
       }
     }
 
+    // Track quiz generation
+    await trackAIEvent({
+      userId: session.id,
+      eventType: forceRegenerate ? "QUIZ_GEN" : "QUIZ_GEN",
+      feature: "QUIZ",
+      lessonId: lesson.id,
+      success: true,
+      latencyMs,
+      cached: !forceRegenerate,
+      metadata: {
+        questionCount: quiz.questions.length,
+        forceRegenerate,
+      },
+    });
+
     return NextResponse.json({
       success: true,
       data: {
@@ -111,6 +144,16 @@ export async function GET(
       },
     });
   } catch (error) {
+    // Track error
+    const session = await getSession();
+    await trackAIEvent({
+      userId: session?.id,
+      eventType: "ERROR",
+      feature: "QUIZ",
+      success: false,
+      errorCode: error instanceof Error ? error.name : "UNKNOWN",
+    });
+
     console.error("Get quiz error:", error);
     return NextResponse.json({ success: false, error: "Failed to get quiz" }, { status: 500 });
   }

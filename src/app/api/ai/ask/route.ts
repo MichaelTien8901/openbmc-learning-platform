@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getNotebookLMService, RateLimitError } from "@/lib/notebooklm";
+import { getNotebookLMService, RateLimitError, trackAIEvent } from "@/lib/notebooklm";
 import type { ApiResponse } from "@/types";
 
 interface AskRequest {
@@ -50,11 +50,29 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
 
     // Get NotebookLM service
     const service = getNotebookLMService();
+    const startTime = Date.now();
 
     // Query NotebookLM
     const response = await service.askQuestion(session.id, {
       question: body.question.trim(),
       context: body.context,
+    });
+
+    const latencyMs = Date.now() - startTime;
+
+    // Track successful query
+    await trackAIEvent({
+      userId: session.id,
+      eventType: response.cached ? "QUERY" : "QUERY",
+      feature: "QA",
+      lessonId: body.lessonId,
+      success: true,
+      latencyMs,
+      cached: response.cached,
+      metadata: {
+        questionLength: body.question.length,
+        citationCount: response.citations.length,
+      },
     });
 
     return NextResponse.json({
@@ -69,6 +87,15 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
   } catch (error) {
     // Handle rate limit errors
     if (error instanceof RateLimitError) {
+      // Track rate limit event
+      const session = await getSession();
+      await trackAIEvent({
+        userId: session?.id,
+        eventType: "RATE_LIMITED",
+        feature: "QA",
+        success: false,
+      });
+
       return NextResponse.json(
         {
           success: false,
@@ -83,6 +110,16 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
         }
       );
     }
+
+    // Track error event
+    const session = await getSession();
+    await trackAIEvent({
+      userId: session?.id,
+      eventType: "ERROR",
+      feature: "QA",
+      success: false,
+      errorCode: error instanceof Error ? error.name : "UNKNOWN",
+    });
 
     console.error("Ask question error:", error);
     return NextResponse.json(
