@@ -100,14 +100,14 @@
 ## 8. NotebookLM Integration + Browser TTS
 
 - [x] 8.1 Set up MCP client/service for NotebookLM connection
-- [ ] 8.2 Implement connection health check endpoint
-- [ ] 8.3 Create content generation service (queries NotebookLM for detailed teaching content)
-- [ ] 8.4 Add generated content caching to database
-- [ ] 8.5 Implement Q&A query endpoint with context
+- [x] 8.2 Implement connection health check endpoint
+- [x] 8.3 Create content generation service (queries NotebookLM for detailed teaching content)
+- [x] 8.4 Add generated content caching to database
+- [x] 8.5 Implement Q&A query endpoint with context
 - [ ] 8.6 Add citation parsing and link generation
-- [ ] 8.7 Implement question rate limiting (20/hour)
-- [ ] 8.8 Create quiz generation service
-- [ ] 8.9 Add quiz caching to database
+- [x] 8.7 Implement question rate limiting (20/hour)
+- [x] 8.8 Create quiz generation service
+- [x] 8.9 Add quiz caching to database
 - [x] 8.10 Create Browser TTS audio player component (Web Speech API)
 - [x] 8.11 Add TTS controls: play/pause, speed (0.5x-2x), voice selection
 - [x] 8.12 Implement TTS progress indicator and text highlighting
