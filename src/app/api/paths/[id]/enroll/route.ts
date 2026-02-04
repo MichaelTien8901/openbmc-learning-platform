@@ -42,32 +42,8 @@ export async function POST(
       );
     }
 
-    // Check prerequisites
-    if (path.prerequisites.length > 0) {
-      const completedPaths = await prisma.pathEnrollment.findMany({
-        where: {
-          userId: session.id,
-          completedAt: { not: null },
-          pathId: { in: path.prerequisites.map((p) => p.prerequisiteId) },
-        },
-        select: { pathId: true },
-      });
-
-      const completedPathIds = new Set(completedPaths.map((p) => p.pathId));
-      const missingPrereqs = path.prerequisites.filter(
-        (p) => !completedPathIds.has(p.prerequisiteId)
-      );
-
-      if (missingPrereqs.length > 0) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: `Please complete prerequisite paths first: ${missingPrereqs.map((p) => p.prerequisite.title).join(", ")}`,
-          },
-          { status: 400 }
-        );
-      }
-    }
+    // Note: Prerequisites are recommendations only, not enforced
+    // Users can enroll in any path they want
 
     // Check if already enrolled
     const existingEnrollment = await prisma.pathEnrollment.findUnique({

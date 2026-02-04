@@ -111,7 +111,6 @@ export default function PathDetailPage({ params }: { params: Promise<{ slug: str
     );
   }
 
-  const hasUnmetPrereqs = path.prerequisites.some((p) => !p.completed);
   const nextLesson = path.lessons.find((l) => !l.completed) || path.lessons[0];
 
   return (
@@ -144,12 +143,14 @@ export default function PathDetailPage({ params }: { params: Promise<{ slug: str
         </div>
       )}
 
-      {/* Prerequisites */}
+      {/* Prerequisites (Recommended) */}
       {path.prerequisites.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Prerequisites</CardTitle>
-            <CardDescription>Complete these paths before starting</CardDescription>
+            <CardTitle>Recommended Prerequisites</CardTitle>
+            <CardDescription>
+              These paths provide helpful background knowledge (optional)
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
@@ -164,7 +165,7 @@ export default function PathDetailPage({ params }: { params: Promise<{ slug: str
                   {prereq.completed ? (
                     <span className="text-green-600 dark:text-green-400">✓ Completed</span>
                   ) : (
-                    <span className="text-gray-400">Not completed</span>
+                    <span className="text-amber-600 dark:text-amber-400">Recommended</span>
                   )}
                 </li>
               ))}
@@ -207,16 +208,8 @@ export default function PathDetailPage({ params }: { params: Promise<{ slug: str
       ) : (
         <Card>
           <CardContent className="py-6">
-            <Button
-              onClick={handleEnroll}
-              disabled={isEnrolling || hasUnmetPrereqs}
-              className="w-full"
-            >
-              {isEnrolling
-                ? "Enrolling..."
-                : hasUnmetPrereqs
-                  ? "Complete Prerequisites First"
-                  : "Enroll & Start Learning"}
+            <Button onClick={handleEnroll} disabled={isEnrolling} className="w-full">
+              {isEnrolling ? "Enrolling..." : "Enroll & Start Learning"}
             </Button>
           </CardContent>
         </Card>
