@@ -22,7 +22,11 @@ const config: Config = {
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
 
   // Files to ignore
-  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.next/"],
+  testPathIgnorePatterns: [
+    "<rootDir>/node_modules/",
+    "<rootDir>/.next/",
+    "<rootDir>/__tests__/__helpers__/",
+  ],
 
   // Transform ESM modules that Jest doesn't handle natively
   transformIgnorePatterns: ["node_modules/(?!(jose)/)"],

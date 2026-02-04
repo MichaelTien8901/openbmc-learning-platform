@@ -156,7 +156,7 @@
 - [x] 11.2 Write unit tests for auth logic
 - [x] 11.3 Write unit tests for progress calculation
 - [ ] 11.4 Write unit tests for sandbox session management
-- [ ] 11.5 Create integration tests for API routes
+- [x] 11.5 Create integration tests for API routes
 - [ ] 11.6 Add end-to-end tests with Playwright
 - [ ] 11.7 Create sandbox container tests
 - [ ] 11.8 Test NotebookLM integration with mocks
