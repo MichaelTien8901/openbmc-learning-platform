@@ -157,7 +157,7 @@
 - [x] 11.3 Write unit tests for progress calculation
 - [ ] 11.4 Write unit tests for sandbox session management
 - [x] 11.5 Create integration tests for API routes
-- [ ] 11.6 Add end-to-end tests with Playwright
+- [x] 11.6 Add end-to-end tests with Playwright
 - [ ] 11.7 Create sandbox container tests
 - [x] 11.8 Test NotebookLM integration with mocks
 - [x] 11.9 Add accessibility tests with axe-core
