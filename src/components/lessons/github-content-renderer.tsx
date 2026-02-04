@@ -103,12 +103,20 @@ export function GitHubContentRenderer({
       // Remove Jekyll/kramdown metadata tags like {: .class1 .class2 }
       processed = processed.replace(/\{:\s*[^}]+\}/g, "");
 
-      // Remove Jekyll TOC markers
-      processed = processed.replace(/^\s*TOC\s*$/gm, "");
-      processed = processed.replace(/\{:toc\}/g, "");
+      // Remove Jekyll TOC markers - various formats
+      processed = processed.replace(/\{:toc\}/gi, "");
 
-      // Remove "Table of Contents" sections that are just Jekyll markers
-      processed = processed.replace(/^#+\s*Table of Contents#?\s*$/gm, "");
+      // Remove "Table of Contents" heading
+      processed = processed.replace(/^#+\s*Table of Contents\s*$/gim, "");
+
+      // Remove standalone TOC markers in various formats
+      processed = processed.replace(/^\s*[-*+]\s*TOC\s*$/gim, ""); // List item: * TOC, - TOC, + TOC
+      processed = processed.replace(/^\s*\d+\.\s*TOC\s*$/gim, ""); // Numbered: 1. TOC
+      processed = processed.replace(/^\s*TOC\s*$/gim, ""); // Plain TOC line
+      processed = processed.replace(/^#+\s*TOC\s*$/gim, ""); // Heading: # TOC
+
+      // Also catch TOC that might have extra whitespace or be on a line with only whitespace around it
+      processed = processed.replace(/\n\s*TOC\s*\n/gi, "\n\n");
 
       // Clean up multiple blank lines
       processed = processed.replace(/\n{3,}/g, "\n\n");
@@ -348,50 +356,123 @@ export function GitHubContentRenderer({
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
+                // Helper to extract text from React children
                 // Headings with anchor links
                 h1({ children, ...props }) {
-                  const text = String(children);
+                  const extractText = (node: React.ReactNode): string => {
+                    if (typeof node === "string") return node;
+                    if (typeof node === "number") return String(node);
+                    if (Array.isArray(node)) return node.map(extractText).join("");
+                    if (node && typeof node === "object" && "props" in node) {
+                      return extractText((node as React.ReactElement).props.children);
+                    }
+                    return "";
+                  };
+                  const text = extractText(children);
                   const id = text
                     .toLowerCase()
                     .replace(/[^\w\s-]/g, "")
                     .replace(/\s+/g, "-");
                   return (
-                    <h1 id={id} className="group scroll-mt-20" {...props}>
+                    <h1
+                      id={id}
+                      className="group mt-8 mb-4 scroll-mt-20 border-b pb-2 text-3xl font-bold"
+                      {...props}
+                    >
                       {children}
-                      <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-100">
+                      <a
+                        href={`#${id}`}
+                        className="text-muted-foreground ml-2 text-lg opacity-0 transition-opacity group-hover:opacity-100"
+                      >
                         #
                       </a>
                     </h1>
                   );
                 },
                 h2({ children, ...props }) {
-                  const text = String(children);
+                  const extractText = (node: React.ReactNode): string => {
+                    if (typeof node === "string") return node;
+                    if (typeof node === "number") return String(node);
+                    if (Array.isArray(node)) return node.map(extractText).join("");
+                    if (node && typeof node === "object" && "props" in node) {
+                      return extractText((node as React.ReactElement).props.children);
+                    }
+                    return "";
+                  };
+                  const text = extractText(children);
                   const id = text
                     .toLowerCase()
                     .replace(/[^\w\s-]/g, "")
                     .replace(/\s+/g, "-");
                   return (
-                    <h2 id={id} className="group scroll-mt-20" {...props}>
+                    <h2
+                      id={id}
+                      className="group mt-6 mb-3 scroll-mt-20 border-b pb-1 text-2xl font-semibold"
+                      {...props}
+                    >
                       {children}
-                      <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-100">
+                      <a
+                        href={`#${id}`}
+                        className="text-muted-foreground ml-2 text-base opacity-0 transition-opacity group-hover:opacity-100"
+                      >
                         #
                       </a>
                     </h2>
                   );
                 },
                 h3({ children, ...props }) {
-                  const text = String(children);
+                  const extractText = (node: React.ReactNode): string => {
+                    if (typeof node === "string") return node;
+                    if (typeof node === "number") return String(node);
+                    if (Array.isArray(node)) return node.map(extractText).join("");
+                    if (node && typeof node === "object" && "props" in node) {
+                      return extractText((node as React.ReactElement).props.children);
+                    }
+                    return "";
+                  };
+                  const text = extractText(children);
                   const id = text
                     .toLowerCase()
                     .replace(/[^\w\s-]/g, "")
                     .replace(/\s+/g, "-");
                   return (
-                    <h3 id={id} className="group scroll-mt-20" {...props}>
+                    <h3
+                      id={id}
+                      className="group mt-5 mb-2 scroll-mt-20 text-xl font-semibold"
+                      {...props}
+                    >
                       {children}
-                      <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-100">
+                      <a
+                        href={`#${id}`}
+                        className="text-muted-foreground ml-2 text-sm opacity-0 transition-opacity group-hover:opacity-100"
+                      >
                         #
                       </a>
                     </h3>
+                  );
+                },
+                h4({ children, ...props }) {
+                  return (
+                    <h4 className="mt-4 mb-2 text-lg font-semibold" {...props}>
+                      {children}
+                    </h4>
+                  );
+                },
+                h5({ children, ...props }) {
+                  return (
+                    <h5 className="mt-3 mb-1 text-base font-semibold" {...props}>
+                      {children}
+                    </h5>
+                  );
+                },
+                h6({ children, ...props }) {
+                  return (
+                    <h6
+                      className="text-muted-foreground mt-3 mb-1 text-sm font-semibold"
+                      {...props}
+                    >
+                      {children}
+                    </h6>
                   );
                 },
                 // Code blocks with copy button
@@ -499,14 +580,61 @@ export function GitHubContentRenderer({
                     </a>
                   );
                 },
-                // Responsive tables
+                // Responsive tables with proper styling
                 table({ children, ...props }) {
                   return (
-                    <div className="my-4 overflow-x-auto">
-                      <table className="min-w-full border-collapse" {...props}>
+                    <div className="my-6 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                      <table
+                        className="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+                        {...props}
+                      >
                         {children}
                       </table>
                     </div>
+                  );
+                },
+                thead({ children, ...props }) {
+                  return (
+                    <thead className="bg-gray-50 dark:bg-gray-800" {...props}>
+                      {children}
+                    </thead>
+                  );
+                },
+                tbody({ children, ...props }) {
+                  return (
+                    <tbody
+                      className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900"
+                      {...props}
+                    >
+                      {children}
+                    </tbody>
+                  );
+                },
+                tr({ children, ...props }) {
+                  return (
+                    <tr
+                      className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                      {...props}
+                    >
+                      {children}
+                    </tr>
+                  );
+                },
+                th({ children, ...props }) {
+                  return (
+                    <th
+                      className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                      {...props}
+                    >
+                      {children}
+                    </th>
+                  );
+                },
+                td({ children, ...props }) {
+                  return (
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300" {...props}>
+                      {children}
+                    </td>
                   );
                 },
                 // Images with lazy loading
@@ -521,7 +649,7 @@ export function GitHubContentRenderer({
                     />
                   );
                 },
-                // Custom admonition blocks
+                // Paragraphs with proper spacing
                 p({ children, ...props }) {
                   const text = String(children);
                   // Check for admonition syntax :::type ... :::
@@ -531,17 +659,63 @@ export function GitHubContentRenderer({
                   if (admonitionMatch) {
                     return renderAdmonition(admonitionMatch[1].toLowerCase(), admonitionMatch[2]);
                   }
-                  return <p {...props}>{children}</p>;
+                  return (
+                    <p className="my-4 leading-7" {...props}>
+                      {children}
+                    </p>
+                  );
                 },
-                // Blockquotes (also check for admonitions)
+                // Lists with proper styling
+                ul({ children, ...props }) {
+                  return (
+                    <ul className="my-4 list-disc space-y-2 pl-6" {...props}>
+                      {children}
+                    </ul>
+                  );
+                },
+                ol({ children, ...props }) {
+                  return (
+                    <ol className="my-4 list-decimal space-y-2 pl-6" {...props}>
+                      {children}
+                    </ol>
+                  );
+                },
+                li({ children, ...props }) {
+                  return (
+                    <li className="leading-7" {...props}>
+                      {children}
+                    </li>
+                  );
+                },
+                // Blockquotes with better styling
                 blockquote({ children, ...props }) {
                   return (
                     <blockquote
-                      className="border-muted-foreground/30 border-l-4 pl-4 italic"
+                      className="my-4 border-l-4 border-gray-300 bg-gray-50 py-2 pr-2 pl-4 text-gray-700 italic dark:border-gray-600 dark:bg-gray-800/50 dark:text-gray-300"
                       {...props}
                     >
                       {children}
                     </blockquote>
+                  );
+                },
+                // Horizontal rule
+                hr({ ...props }) {
+                  return <hr className="my-8 border-gray-200 dark:border-gray-700" {...props} />;
+                },
+                // Strong/bold text
+                strong({ children, ...props }) {
+                  return (
+                    <strong className="font-semibold text-gray-900 dark:text-gray-100" {...props}>
+                      {children}
+                    </strong>
+                  );
+                },
+                // Emphasis/italic text
+                em({ children, ...props }) {
+                  return (
+                    <em className="italic" {...props}>
+                      {children}
+                    </em>
                   );
                 },
               }}
