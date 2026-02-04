@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CompletionBadge } from "@/components/paths/completion-badge";
 
 interface PathDetail {
   id: string;
@@ -124,12 +125,15 @@ export default function PathDetailPage({ params }: { params: Promise<{ slug: str
             >
               {path.difficulty}
             </span>
+            {path.enrolled && (
+              <CompletionBadge completedAt={path.completedAt} progress={path.progress} />
+            )}
           </div>
           <p className="mt-2 text-gray-600 dark:text-gray-400">{path.description}</p>
           <div className="mt-4 flex gap-4 text-sm text-gray-500 dark:text-gray-400">
             <span>{path.lessons.length} lessons</span>
             <span>{path.estimatedHours} hours</span>
-            {path.enrolled && <span>{path.progress}% complete</span>}
+            {path.enrolled && !path.completedAt && <span>{path.progress}% complete</span>}
           </div>
         </div>
       </div>

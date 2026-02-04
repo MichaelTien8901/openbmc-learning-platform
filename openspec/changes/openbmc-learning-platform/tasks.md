@@ -44,8 +44,8 @@
 - [x] 4.5 Create learning paths catalog page with filters
 - [x] 4.6 Create path detail page with lesson list
 - [x] 4.7 Implement path progress calculation
-- [ ] 4.8 Add path completion detection and badge display
-- [ ] 4.9 Create suggested next paths recommendation logic
+- [x] 4.8 Add path completion detection and badge display
+- [x] 4.9 Create suggested next paths recommendation logic
 - [x] 4.10 Add difficulty-based filtering UI
 
 ## 5. Progress Tracking
