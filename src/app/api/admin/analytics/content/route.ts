@@ -40,7 +40,7 @@ interface ContentAnalytics {
  * GET /api/admin/analytics/content - Get content analytics
  */
 export async function GET(
-  request: NextRequest
+  _request: NextRequest
 ): Promise<NextResponse<ApiResponse<ContentAnalytics>>> {
   try {
     const session = await getSession();

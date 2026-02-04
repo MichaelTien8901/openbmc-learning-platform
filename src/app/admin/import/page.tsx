@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { FileText, Upload, X, Plus, Check, AlertCircle } from "lucide-react";
 
 interface ParsedDocument {
@@ -18,7 +17,6 @@ interface ImportResult {
 }
 
 export default function ImportPage() {
-  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [documents, setDocuments] = useState<ParsedDocument[]>([]);
   const [importing, setImporting] = useState(false);

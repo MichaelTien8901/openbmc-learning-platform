@@ -49,7 +49,7 @@ const THRESHOLDS = {
  * GET /api/admin/analytics/alerts - Get content performance alerts
  */
 export async function GET(
-  request: NextRequest
+  _request: NextRequest
 ): Promise<NextResponse<ApiResponse<AlertsResponse>>> {
   try {
     const session = await getSession();

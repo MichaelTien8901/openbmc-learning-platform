@@ -356,7 +356,7 @@ class NotebookLMClient {
   /**
    * Get fallback quiz when generation is unavailable
    */
-  private getFallbackQuiz(request: QuizGenerationRequest): GeneratedQuiz {
+  private getFallbackQuiz(_request: QuizGenerationRequest): GeneratedQuiz {
     return {
       questions: [],
       generatedAt: new Date(),

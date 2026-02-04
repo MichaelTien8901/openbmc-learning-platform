@@ -10,9 +10,6 @@ const CITATION_MARKER_PATTERN = /\[(\d+)\]/g;
 // Pattern to match inline citations like [Source: document.md]
 const INLINE_CITATION_PATTERN = /\[Source:\s*([^\]]+)\]/gi;
 
-// Pattern to match markdown-style links
-const MARKDOWN_LINK_PATTERN = /\[([^\]]+)\]\(([^)]+)\)/g;
-
 /**
  * Parse citations from NotebookLM response text
  */
