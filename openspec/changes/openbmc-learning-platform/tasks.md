@@ -56,7 +56,7 @@
 - [x] 5.4 Implement learning streak calculation logic
 - [x] 5.5 Create progress dashboard page
 - [x] 5.6 Add weekly activity chart component
-- [ ] 5.7 Implement path-specific progress view
+- [x] 5.7 Implement path-specific progress view
 - [x] 5.8 Create progress export endpoint (JSON and Markdown)
 - [ ] 5.9 Add cross-device sync verification
 - [ ] 5.10 Implement offline progress queueing

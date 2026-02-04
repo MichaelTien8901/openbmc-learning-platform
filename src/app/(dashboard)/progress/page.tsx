@@ -189,7 +189,7 @@ export default function ProgressPage() {
                 {progress.enrolledPaths.map((path) => (
                   <li key={path.id}>
                     <Link
-                      href={`/paths/${path.slug}`}
+                      href={`/progress/${path.id}`}
                       className="-mx-2 block rounded-md px-2 py-2 hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
                       <div className="mb-1 flex items-center justify-between">
