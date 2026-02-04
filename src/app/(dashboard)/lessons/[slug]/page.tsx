@@ -118,12 +118,12 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
     );
   }
 
-  // Use wider layout for IFRAME mode
-  const isIframeMode = lesson.sourceUrl && lesson.repositoryPath && lesson.displayMode === "IFRAME";
+  // Use wider layout for GitHub content (both IFRAME and RENDER modes)
+  const hasGitHubContent = lesson.sourceUrl && lesson.repositoryPath;
 
   return (
     <div
-      className={`mx-auto space-y-4 px-4 sm:space-y-6 sm:px-0 ${isIframeMode ? "max-w-7xl" : "max-w-4xl"}`}
+      className={`mx-auto space-y-4 px-4 sm:space-y-6 sm:px-0 ${hasGitHubContent ? "max-w-7xl" : "max-w-4xl"}`}
     >
       {/* Skip to content link for accessibility */}
       <a
@@ -232,30 +232,21 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
             />
           </Card>
         ) : (
-          // RENDER mode - with sidebar
-          <div className="grid gap-6 lg:grid-cols-[1fr_250px]">
-            <Card className="overflow-hidden">
-              <GitHubContentRenderer
-                repositoryPath={lesson.repositoryPath}
-                sourceUrl={lesson.sourceUrl}
-                title={lesson.title}
-                className="min-h-[600px]"
-                onScrollProgress={(progress) => {
-                  // Track scroll progress for completion
-                  if (progress > 0.9 && !lesson.completed) {
-                    // User has scrolled through most of content
-                  }
-                }}
-              />
-            </Card>
-
-            {/* Table of Contents Sidebar */}
-            <aside className="hidden lg:block" aria-label="Table of contents">
-              <div className="sticky top-24">
-                <TableOfContents content={lesson.content} />
-              </div>
-            </aside>
-          </div>
+          // RENDER mode - full width (TOC is built into the renderer)
+          <Card className="overflow-hidden">
+            <GitHubContentRenderer
+              repositoryPath={lesson.repositoryPath}
+              sourceUrl={lesson.sourceUrl}
+              title={lesson.title}
+              className="min-h-[800px]"
+              onScrollProgress={(progress) => {
+                // Track scroll progress for completion
+                if (progress > 0.9 && !lesson.completed) {
+                  // User has scrolled through most of content
+                }
+              }}
+            />
+          </Card>
         )
       ) : (
         // Fallback: Local content with TOC Sidebar
