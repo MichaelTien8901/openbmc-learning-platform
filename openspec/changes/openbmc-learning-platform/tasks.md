@@ -58,7 +58,7 @@
 - [x] 5.6 Add weekly activity chart component
 - [x] 5.7 Implement path-specific progress view
 - [x] 5.8 Create progress export endpoint (JSON and Markdown)
-- [ ] 5.9 Add cross-device sync verification
+- [x] 5.9 Add cross-device sync verification
 - [x] 5.10 Implement offline progress queueing
 
 ## 6. Lesson Player
