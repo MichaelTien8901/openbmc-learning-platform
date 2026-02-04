@@ -180,7 +180,7 @@
 - [x] 13.1 Create import script for openbmc-guide-tutorial docs
 - [x] 13.2 Map existing doc structure to learning paths
 - [x] 13.3 Extract code examples as sandbox exercises
-- [ ] 13.4 Upload documentation to NotebookLM notebooks
+- [x] 13.4 Upload documentation to NotebookLM notebooks
 - [x] 13.5 Generate initial quizzes for imported lessons
 - [ ] 13.6 Review and curate imported content
 - [x] 13.7 Create initial learning path sequences
