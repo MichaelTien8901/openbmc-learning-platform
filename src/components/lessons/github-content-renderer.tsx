@@ -395,16 +395,46 @@ export function GitHubContentRenderer({
                   );
                 },
                 // Code blocks with copy button
-                code({ className, children, ...props }) {
+                code({ className, children, node, ...props }) {
                   const match = /language-(\w+)/.exec(className || "");
-                  const isInline = !match;
                   const codeString = String(children).replace(/\n$/, "");
+
+                  // Check if this is a block code (has newlines or is inside pre tag)
+                  const isBlock =
+                    codeString.includes("\n") ||
+                    node?.position?.start.line !== node?.position?.end.line;
+                  const isInline = !isBlock && !match;
 
                   if (isInline) {
                     return (
                       <code className="bg-muted rounded px-1.5 py-0.5 font-mono text-sm" {...props}>
                         {children}
                       </code>
+                    );
+                  }
+
+                  // For code blocks without language (like ASCII art), use plain pre/code with monospace
+                  if (!match) {
+                    return (
+                      <div className="group relative">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-2 right-2 h-8 w-8 p-0 opacity-0 transition-opacity group-hover:opacity-100"
+                          onClick={() => copyToClipboard(codeString)}
+                        >
+                          {copiedCode === codeString ? (
+                            <Check className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
+                        </Button>
+                        <pre className="!mt-4 !mb-4 overflow-x-auto rounded-lg bg-[#282c34] p-4">
+                          <code className="font-mono text-sm leading-relaxed whitespace-pre text-gray-100">
+                            {codeString}
+                          </code>
+                        </pre>
+                      </div>
                     );
                   }
 
@@ -426,7 +456,7 @@ export function GitHubContentRenderer({
                         style={oneDark}
                         language={match[1]}
                         PreTag="div"
-                        className="!mt-4 !mb-4 rounded-lg"
+                        className="!mt-4 !mb-4 rounded-lg font-mono"
                         showLineNumbers
                       >
                         {codeString}
