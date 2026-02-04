@@ -123,15 +123,34 @@ test.describe("Lesson Viewer", () => {
       }
     });
 
-    test("should have TTS/audio controls", async ({ page }) => {
+    // TTS/audio tests removed - feature deprecated in favor of GitHub content delivery
+  });
+
+  test.describe("GitHub Content Delivery", () => {
+    test("should display View Original link for GitHub-sourced content", async ({ page }) => {
       const response = await page.goto("/lessons/deployment-guide");
 
       if (response?.status() === 200) {
-        // Look for audio player or TTS controls - verify page structure
-        const _audioControls = page.getByRole("button", { name: /play|listen|audio|speak/i });
+        // Look for "View Original" link that points to GitHub Pages
+        const viewOriginalLink = page.getByRole("link", { name: /view original/i });
 
-        // Verify page has loaded fully
+        if ((await viewOriginalLink.count()) > 0) {
+          const href = await viewOriginalLink.getAttribute("href");
+          // Should point to GitHub Pages
+          expect(href).toContain("github.io");
+        }
+      }
+    });
+
+    test("should render content from GitHub or local fallback", async ({ page }) => {
+      const response = await page.goto("/lessons/deployment-guide");
+
+      if (response?.status() === 200) {
         await page.waitForLoadState("networkidle");
+
+        // Content should be visible regardless of source (GitHub or local)
+        const contentArea = page.locator("main, article, .prose");
+        await expect(contentArea.first()).toBeVisible();
       }
     });
   });

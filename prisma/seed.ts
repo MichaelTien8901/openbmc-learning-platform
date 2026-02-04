@@ -140,6 +140,9 @@ async function main() {
 
   console.log("Created learning paths with prerequisites");
 
+  // GitHub Pages base URL for content source
+  const GITHUB_PAGES_BASE = "https://MichaelTien8901.github.io/openbmc-guide-tutorial";
+
   // Create Lessons for Getting Started path
   const lesson1 = await prisma.lesson.upsert({
     where: { slug: "what-is-openbmc" },
@@ -148,6 +151,9 @@ async function main() {
       slug: "what-is-openbmc",
       title: "What is OpenBMC?",
       description: "Introduction to OpenBMC and its role in server management",
+      sourceUrl: `${GITHUB_PAGES_BASE}/intro/what-is-openbmc/`,
+      repositoryPath: "docs/intro/what-is-openbmc.md",
+      displayMode: "RENDER",
       content: `# What is OpenBMC?
 
 OpenBMC is an open-source project that provides a Linux distribution for Board Management Controllers (BMCs). It's designed to enable a more open, secure, and customizable approach to server management.
@@ -189,6 +195,9 @@ In the following lessons, we'll explore the OpenBMC architecture in detail and s
       slug: "openbmc-architecture",
       title: "OpenBMC Architecture",
       description: "Deep dive into the components that make up OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/intro/architecture/`,
+      repositoryPath: "docs/intro/architecture.md",
+      displayMode: "RENDER",
       content: `# OpenBMC Architecture
 
 Understanding the OpenBMC architecture is essential for effective development and troubleshooting.
@@ -254,6 +263,9 @@ Now that you understand the architecture, let's set up your development environm
       slug: "development-environment-setup",
       title: "Setting Up Your Development Environment",
       description: "Configure your workstation for OpenBMC development",
+      sourceUrl: `${GITHUB_PAGES_BASE}/setup/development-environment/`,
+      repositoryPath: "docs/setup/development-environment.md",
+      displayMode: "RENDER",
       content: `# Setting Up Your Development Environment
 
 This lesson guides you through setting up a complete OpenBMC development environment.
@@ -360,6 +372,9 @@ Congratulations! You now have a working OpenBMC development environment.
       slug: "dbus-introduction",
       title: "Introduction to D-Bus",
       description: "Learn the fundamentals of D-Bus communication",
+      sourceUrl: `${GITHUB_PAGES_BASE}/dbus/introduction/`,
+      repositoryPath: "docs/dbus/introduction.md",
+      displayMode: "RENDER",
       content: `# Introduction to D-Bus
 
 D-Bus is a message bus system that provides a way for applications to communicate with each other.

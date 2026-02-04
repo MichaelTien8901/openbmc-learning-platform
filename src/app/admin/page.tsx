@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { GitHubSyncPanel } from "@/components/admin/github-sync-panel";
 
 export default async function AdminDashboardPage() {
   const [pathCount, lessonCount, userCount, enrollmentCount] = await Promise.all([
@@ -93,6 +94,9 @@ export default async function AdminDashboardPage() {
           </Button>
         </CardContent>
       </Card>
+
+      {/* GitHub Content Sync */}
+      <GitHubSyncPanel />
 
       {/* Recent Users */}
       <Card>

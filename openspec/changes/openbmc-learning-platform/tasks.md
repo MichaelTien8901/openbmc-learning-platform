@@ -194,53 +194,53 @@
 
 ### Phase 1: Database & Model Updates
 
-- [ ] 14.1 Add `sourceUrl`, `repositoryPath`, `displayMode` columns to Lesson model
-- [ ] 14.2 Create migration script for schema changes
-- [ ] 14.3 Remove GeneratedContent table (AI content cache)
-- [ ] 14.4 Remove AIResponseCache table (Q&A cache)
-- [ ] 14.5 Remove AIUsageEvent and AIUsageDaily tables
-- [ ] 14.6 Update seed script to use GitHub source URLs
+- [x] 14.1 Add `sourceUrl`, `repositoryPath`, `displayMode` columns to Lesson model
+- [x] 14.2 Create migration script for schema changes
+- [x] 14.3 Remove GeneratedContent table (AI content cache)
+- [x] 14.4 Remove AIResponseCache table (Q&A cache)
+- [x] 14.5 Remove AIUsageEvent and AIUsageDaily tables
+- [x] 14.6 Update seed script to use GitHub source URLs
 
 ### Phase 2: GitHub Integration
 
-- [ ] 14.7 Create GitHub content fetcher service (`src/lib/github/content-fetcher.ts`)
-- [ ] 14.8 Implement repository structure parser for lesson discovery
-- [ ] 14.9 Create admin "Sync from GitHub" endpoint (`POST /api/admin/sync-github`)
-- [ ] 14.10 Add raw markdown proxy endpoint (`GET /api/content/raw/:path`)
-- [ ] 14.11 Map existing lessons to openbmc-guide-tutorial URLs
+- [x] 14.7 Create GitHub content fetcher service (`src/lib/github/content-fetcher.ts`)
+- [x] 14.8 Implement repository structure parser for lesson discovery
+- [x] 14.9 Create admin "Sync from GitHub" endpoint (`POST /api/admin/sync-github`)
+- [x] 14.10 Add raw markdown proxy endpoint (`GET /api/content/raw/:path`)
+- [x] 14.11 Map existing lessons to openbmc-guide-tutorial URLs
 
 ### Phase 3: Content Display Components
 
-- [ ] 14.12 Create `GitHubContentFrame` component (iframe mode)
-- [ ] 14.13 Create `GitHubContentRenderer` component (fetch + render mode)
-- [ ] 14.14 Update lesson player to support both display modes
-- [ ] 14.15 Add "View Original" link to GitHub Pages source
-- [ ] 14.16 Implement scroll position tracking for progress (render mode)
+- [x] 14.12 Create `GitHubContentFrame` component (iframe mode)
+- [x] 14.13 Create `GitHubContentRenderer` component (fetch + render mode)
+- [x] 14.14 Update lesson player to support both display modes
+- [x] 14.15 Add "View Original" link to GitHub Pages source
+- [x] 14.16 Implement scroll position tracking for progress (render mode)
 
 ### Phase 4: Remove NotebookLM Code
 
-- [ ] 14.17 Remove `src/lib/notebooklm/` directory (client, service, types)
-- [ ] 14.18 Remove `/api/ai/audio/` endpoint
-- [ ] 14.19 Remove `/api/ai/ask/` endpoint
-- [ ] 14.20 Remove `/api/ai/quiz/` generation endpoint (keep manual quiz endpoints)
-- [ ] 14.21 Remove AI audio player component
-- [ ] 14.22 Remove AI Q&A panel component
-- [ ] 14.23 Remove TTS-related components and hooks
+- [x] 14.17 Remove `src/lib/notebooklm/` directory (client, service, types)
+- [x] 14.18 Remove `/api/ai/audio/` endpoint
+- [x] 14.19 Remove `/api/ai/ask/` endpoint
+- [x] 14.20 Remove `/api/ai/quiz/` generation endpoint (keep manual quiz endpoints)
+- [x] 14.21 Remove AI audio player component
+- [x] 14.22 Remove AI Q&A panel component
+- [x] 14.23 Remove TTS-related components and hooks
 
 ### Phase 5: Admin Updates
 
-- [ ] 14.24 Update lesson editor to use sourceUrl instead of notebookId
-- [ ] 14.25 Add displayMode selector (iframe/render) to lesson editor
-- [ ] 14.26 Create GitHub sync panel in admin dashboard
-- [ ] 14.27 Update content analytics to remove AI metrics
-- [ ] 14.28 Update import script to set GitHub source URLs
+- [x] 14.24 Update lesson editor to use sourceUrl instead of notebookId
+- [x] 14.25 Add displayMode selector (iframe/render) to lesson editor
+- [x] 14.26 Create GitHub sync panel in admin dashboard
+- [x] 14.27 Update content analytics to remove AI metrics
+- [x] 14.28 Update import script to set GitHub source URLs
 
 ### Phase 6: Testing & Cleanup
 
-- [ ] 14.29 Update/remove NotebookLM integration tests
-- [ ] 14.30 Add tests for GitHub content fetching
-- [ ] 14.31 Add tests for iframe and render display modes
-- [ ] 14.32 Update E2E tests for new lesson player flow
-- [ ] 14.33 Remove NotebookLM documentation (`docs/NOTEBOOKLM.md`)
-- [ ] 14.34 Update CLAUDE.md to reflect architecture change
-- [ ] 14.35 Create documentation for GitHub content integration
+- [x] 14.29 Update/remove NotebookLM integration tests
+- [x] 14.30 Add tests for GitHub content fetching
+- [x] 14.31 Add tests for iframe and render display modes
+- [x] 14.32 Update E2E tests for new lesson player flow
+- [x] 14.33 Remove NotebookLM documentation (`docs/NOTEBOOKLM.md`)
+- [x] 14.34 Update CLAUDE.md to reflect architecture change
+- [x] 14.35 Create documentation for GitHub content integration

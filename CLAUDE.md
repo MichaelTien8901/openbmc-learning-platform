@@ -5,10 +5,11 @@ This file provides guidance to Claude Code when working with code in this reposi
 ## Project Overview
 
 OpenBMC Learning Platform - A web-based learning management system for OpenBMC education featuring:
+
 - User registration and authentication
 - Curated learning paths with progress tracking
 - Interactive code sandbox with QEMU-based OpenBMC environments
-- NotebookLM integration for AI-powered audio lessons, Q&A, and quizzes
+- Direct content delivery from openbmc-guide-tutorial GitHub Pages
 - Content management for lessons imported from openbmc-guide-tutorial
 
 ## Tech Stack
@@ -18,7 +19,7 @@ OpenBMC Learning Platform - A web-based learning management system for OpenBMC e
 - **Database**: PostgreSQL
 - **Auth**: NextAuth.js (Google, GitHub OAuth + email/password)
 - **Code Sandbox**: Docker + QEMU ast2600-evb + xterm.js
-- **AI Features**: NotebookLM via MCP protocol
+- **Content**: Direct delivery from GitHub Pages (MichaelTien8901.github.io/openbmc-guide-tutorial)
 
 ## Development Commands
 

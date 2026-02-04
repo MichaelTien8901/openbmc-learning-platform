@@ -5,12 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { TTSPlayer } from "@/components/lessons/tts-player";
 import { TableOfContents } from "@/components/lessons/table-of-contents";
 import { PathProgressBar } from "@/components/lessons/path-progress-bar";
 import { QuizPlayer } from "@/components/lessons/quiz-player";
 import { BookmarkButton } from "@/components/lessons/bookmark-button";
 import { NotesPanel } from "@/components/lessons/notes-panel";
+import { GitHubContentFrame } from "@/components/lessons/github-content-frame";
+import { GitHubContentRenderer } from "@/components/lessons/github-content-renderer";
 
 interface PathLessonInfo {
   slug: string;
@@ -30,6 +31,10 @@ interface LessonDetail {
   hasCodeExercise: boolean;
   completed: boolean;
   lastPosition: number;
+  // GitHub content delivery fields
+  sourceUrl: string | null;
+  repositoryPath: string | null;
+  displayMode: "IFRAME" | "RENDER";
   path: {
     id: string;
     slug: string;
@@ -209,45 +214,68 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
         </div>
       )}
 
-      {/* TTS Audio Player */}
-      <TTSPlayer
-        content={lesson.content}
-        title="Listen to Lesson"
-        initialPosition={lesson.lastPosition}
-        onPositionChange={(position) => {
-          // Save position for resume functionality
-          fetch(`/api/lessons/${lesson.slug}/position`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ position }),
-          }).catch(console.error);
-        }}
-      />
+      {/* Lesson Content - GitHub or Local */}
+      {lesson.sourceUrl && lesson.repositoryPath ? (
+        // GitHub Content Delivery Mode
+        <div className="grid gap-6 lg:grid-cols-[1fr_250px]">
+          <Card className="overflow-hidden">
+            {lesson.displayMode === "IFRAME" ? (
+              <GitHubContentFrame
+                sourceUrl={lesson.sourceUrl}
+                title={lesson.title}
+                className="min-h-[600px]"
+              />
+            ) : (
+              <GitHubContentRenderer
+                repositoryPath={lesson.repositoryPath}
+                sourceUrl={lesson.sourceUrl}
+                title={lesson.title}
+                className="min-h-[600px]"
+                onScrollProgress={(progress) => {
+                  // Track scroll progress for completion
+                  if (progress > 0.9 && !lesson.completed) {
+                    // User has scrolled through most of content
+                  }
+                }}
+              />
+            )}
+          </Card>
 
-      {/* Lesson Content with TOC Sidebar */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_250px]">
-        <Card>
-          <CardContent className="prose prose-gray dark:prose-invert max-w-none px-4 py-6 sm:px-6 sm:py-8">
-            <main
-              id="lesson-content"
-              role="main"
-              aria-label="Lesson content"
-              tabIndex={-1}
-              className="focus:outline-none"
-              dangerouslySetInnerHTML={{
-                __html: renderMarkdown(lesson.content),
-              }}
-            />
-          </CardContent>
-        </Card>
+          {/* Table of Contents Sidebar - only for RENDER mode */}
+          {lesson.displayMode === "RENDER" && (
+            <aside className="hidden lg:block" aria-label="Table of contents">
+              <div className="sticky top-24">
+                <TableOfContents content={lesson.content} />
+              </div>
+            </aside>
+          )}
+        </div>
+      ) : (
+        // Fallback: Local content with TOC Sidebar
+        <div className="grid gap-6 lg:grid-cols-[1fr_250px]">
+          <Card>
+            <CardContent className="prose prose-gray dark:prose-invert max-w-none px-4 py-6 sm:px-6 sm:py-8">
+              <main
+                id="lesson-content"
+                role="main"
+                aria-label="Lesson content"
+                tabIndex={-1}
+                className="focus:outline-none"
+                dangerouslySetInnerHTML={{
+                  __html: renderMarkdown(lesson.content),
+                }}
+              />
+            </CardContent>
+          </Card>
 
-        {/* Table of Contents Sidebar */}
-        <aside className="hidden lg:block" aria-label="Table of contents">
-          <div className="sticky top-24">
-            <TableOfContents content={lesson.content} />
-          </div>
-        </aside>
-      </div>
+          {/* Table of Contents Sidebar */}
+          <aside className="hidden lg:block" aria-label="Table of contents">
+            <div className="sticky top-24">
+              <TableOfContents content={lesson.content} />
+            </div>
+          </aside>
+        </div>
+      )}
 
       {/* Quiz Section */}
       <QuizPlayer

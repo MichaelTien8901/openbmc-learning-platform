@@ -30,6 +30,9 @@ interface ParsedDocument {
   codeBlocks: CodeBlock[];
   metadata: DocumentMetadata;
   order: number;
+  // GitHub content delivery fields
+  sourceUrl: string;
+  repositoryPath: string;
 }
 
 interface Heading {
@@ -59,7 +62,11 @@ interface ImportOptions {
   difficulty: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
   published: boolean;
   sourceDir: string;
+  githubPagesBase: string;
 }
+
+// GitHub Pages base URL for openbmc-guide-tutorial
+const DEFAULT_GITHUB_PAGES_BASE = "https://MichaelTien8901.github.io/openbmc-guide-tutorial";
 
 interface ImportResult {
   lessonsCreated: number;
@@ -293,6 +300,11 @@ function parseDocument(filePath: string, basePath: string, order: number): Parse
     metadata.estimatedMinutes = estimateReadingTime(cleanContent);
   }
 
+  // Build GitHub source URLs
+  const repositoryPath = `docs/${relativePath}`;
+  const pagePath = relativePath.replace(/\.md$/, "").replace(/\/index$/, "/");
+  const sourceUrl = `${DEFAULT_GITHUB_PAGES_BASE}/${pagePath}/`;
+
   return {
     filePath,
     relativePath,
@@ -303,6 +315,8 @@ function parseDocument(filePath: string, basePath: string, order: number): Parse
     codeBlocks: extractCodeBlocks(cleanContent),
     metadata,
     order,
+    sourceUrl,
+    repositoryPath,
   };
 }
 
@@ -436,6 +450,7 @@ async function importDocuments(
 
     console.log(`📄 Importing: ${doc.title}`);
     console.log(`   Slug: ${doc.slug}`);
+    console.log(`   Source: ${doc.sourceUrl}`);
     console.log(`   Headings: ${doc.headings.length}, Code blocks: ${doc.codeBlocks.length}`);
     console.log(`   Est. time: ${doc.metadata.estimatedMinutes} min`);
 
@@ -446,11 +461,13 @@ async function importDocuments(
             title: doc.title,
             slug: doc.slug,
             content: doc.content,
-            contentType: "ARTICLE",
+            contentType: "MARKDOWN",
             published: options.published,
             estimatedMinutes: doc.metadata.estimatedMinutes,
-            orderIndex: doc.order,
-            pathId: pathId,
+            // GitHub content delivery fields
+            sourceUrl: doc.sourceUrl,
+            repositoryPath: doc.repositoryPath,
+            displayMode: "RENDER",
           },
         });
         result.lessonsCreated++;

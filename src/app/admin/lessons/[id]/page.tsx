@@ -19,6 +19,10 @@ interface LessonData {
   estimatedMinutes: number;
   hasCodeExercise: boolean;
   published: boolean;
+  // GitHub Content Delivery fields
+  sourceUrl: string | null;
+  repositoryPath: string | null;
+  displayMode: "IFRAME" | "RENDER";
 }
 
 export default function AdminLessonEditPage({ params }: { params: Promise<{ id: string }> }) {
@@ -37,6 +41,9 @@ export default function AdminLessonEditPage({ params }: { params: Promise<{ id: 
     estimatedMinutes: 10,
     hasCodeExercise: false,
     published: false,
+    sourceUrl: null,
+    repositoryPath: null,
+    displayMode: "RENDER",
   });
 
   const [isLoading, setIsLoading] = useState(!isNew);
@@ -311,6 +318,66 @@ export default function AdminLessonEditPage({ params }: { params: Promise<{ id: 
                 />
                 <Label htmlFor="hasCodeExercise">Has Code Exercise</Label>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* GitHub Content Source */}
+          <Card>
+            <CardHeader>
+              <CardTitle>GitHub Content Source</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="sourceUrl">GitHub Pages URL</Label>
+                <Input
+                  id="sourceUrl"
+                  value={lesson.sourceUrl || ""}
+                  onChange={(e) => setLesson({ ...lesson, sourceUrl: e.target.value || null })}
+                  placeholder="https://MichaelTien8901.github.io/openbmc-guide-tutorial/..."
+                />
+                <p className="mt-1 text-xs text-gray-500">Leave empty to use local content</p>
+              </div>
+
+              <div>
+                <Label htmlFor="repositoryPath">Repository Path</Label>
+                <Input
+                  id="repositoryPath"
+                  value={lesson.repositoryPath || ""}
+                  onChange={(e) => setLesson({ ...lesson, repositoryPath: e.target.value || null })}
+                  placeholder="docs/intro/what-is-openbmc.md"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Path to markdown file in openbmc-guide-tutorial repo
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="displayMode">Display Mode</Label>
+                <select
+                  id="displayMode"
+                  value={lesson.displayMode}
+                  onChange={(e) =>
+                    setLesson({ ...lesson, displayMode: e.target.value as "IFRAME" | "RENDER" })
+                  }
+                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                >
+                  <option value="RENDER">Render (fetch & display with platform styling)</option>
+                  <option value="IFRAME">Iframe (embed GitHub Pages directly)</option>
+                </select>
+              </div>
+
+              {lesson.sourceUrl && (
+                <div className="pt-2">
+                  <a
+                    href={lesson.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-blue-600 hover:underline dark:text-blue-400"
+                  >
+                    Preview source →
+                  </a>
+                </div>
+              )}
             </CardContent>
           </Card>
 

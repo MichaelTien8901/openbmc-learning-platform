@@ -137,10 +137,15 @@ model Lesson {
   difficulty      Difficulty  @default(BEGINNER)
   estimatedMinutes Int        @default(15)
   hasCodeExercise Boolean     @default(false)
-  notebookId      String?     // NotebookLM notebook reference
+  notebookId      String?     // DEPRECATED: NotebookLM notebook reference
   published       Boolean     @default(false)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+
+  // GitHub Content Delivery (replaces NotebookLM)
+  sourceUrl       String?     // GitHub Pages URL for content
+  repositoryPath  String?     // Path in openbmc-guide-tutorial repo
+  displayMode     DisplayMode @default(RENDER)
 
   // Relations
   pathLessons   PathLesson[]
@@ -160,6 +165,11 @@ enum ContentType {
   MARKDOWN
   VIDEO
   AUDIO
+}
+
+enum DisplayMode {
+  IFRAME  // Embed GitHub Pages directly
+  RENDER  // Fetch markdown and render with platform styling
 }
 
 model PathLesson {
@@ -367,90 +377,15 @@ model ContentVersion {
 }
 
 // ============================================================================
-// AI/NotebookLM Integration
+// AI/NotebookLM Integration (DEPRECATED - Removed)
 // ============================================================================
-
-model GeneratedContent {
-  id        String              @id @default(cuid())
-  lessonId  String
-  type      GeneratedContentType
-  content   String              @db.Text // JSON stringified content
-  metadata  Json?               // Additional metadata (topic, notebookId, etc.)
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-
-  @@index([lessonId, type])
-  @@index([createdAt])
-}
-
-enum GeneratedContentType {
-  TEACHING_CONTENT
-  QUIZ
-  SUMMARY
-}
-
-model AIResponseCache {
-  cacheKey  String   @id
-  response  String   @db.Text // JSON stringified response
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([expiresAt])
-}
-
-// ============================================================================
-// AI Usage Analytics
-// ============================================================================
-
-model AIUsageEvent {
-  id          String         @id @default(cuid())
-  userId      String?
-  eventType   AIEventType
-  feature     AIFeature
-  lessonId    String?
-  metadata    Json?          // Additional event data (question length, response time, etc.)
-  success     Boolean        @default(true)
-  errorCode   String?
-  latencyMs   Int?           // Response time in milliseconds
-  cached      Boolean        @default(false)
-  createdAt   DateTime       @default(now())
-
-  @@index([userId])
-  @@index([eventType])
-  @@index([feature])
-  @@index([createdAt])
-  @@index([lessonId])
-}
-
-enum AIEventType {
-  QUERY           // Q&A question asked
-  CONTENT_GEN     // Content generation requested
-  QUIZ_GEN        // Quiz generation requested
-  RATE_LIMITED    // Request was rate limited
-  ERROR           // Error occurred
-  FALLBACK        // Fallback response used
-}
-
-enum AIFeature {
-  QA              // Q&A feature
-  CONTENT         // Content generation
-  QUIZ            // Quiz generation
-  TTS             // Text-to-speech
-}
-
-model AIUsageDaily {
-  id              String   @id @default(cuid())
-  date            DateTime @db.Date
-  feature         AIFeature
-  totalRequests   Int      @default(0)
-  successCount    Int      @default(0)
-  errorCount      Int      @default(0)
-  cacheHits       Int      @default(0)
-  rateLimitCount  Int      @default(0)
-  avgLatencyMs    Float?
-  uniqueUsers     Int      @default(0)
-
-  @@unique([date, feature])
-  @@index([date])
-}
+// These models have been removed in favor of direct GitHub content delivery.
+// See: openspec/changes/openbmc-learning-platform/specs/direct-content-delivery/
+//
+// Removed models:
+// - GeneratedContent (AI-generated teaching content cache)
+// - AIResponseCache (Q&A response cache)
+// - AIUsageEvent (per-request analytics)
+// - AIUsageDaily (aggregated daily analytics)
+//
+// Migration: 20260204000001_remove_notebooklm_tables
