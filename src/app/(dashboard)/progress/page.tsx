@@ -4,6 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { WeeklyActivityChart } from "@/components/progress/weekly-activity-chart";
+
+interface WeeklyActivity {
+  date: string;
+  dayName: string;
+  lessonsCompleted: number;
+  minutesLearned: number;
+}
 
 interface ProgressSummary {
   lessonsCompleted: number;
@@ -14,6 +22,7 @@ interface ProgressSummary {
   averageQuizScore: number | null;
   currentStreak: number;
   longestStreak: number;
+  weeklyActivity: WeeklyActivity[];
   recentActivity: Array<{
     lessonId: string;
     lessonTitle: string;
@@ -69,11 +78,31 @@ export default function ProgressPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Your Progress</h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Track your learning journey and achievements
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Your Progress</h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
+            Track your learning journey and achievements
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {}
+          <a
+            href="/api/progress/export?format=json"
+            download
+            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          >
+            Export JSON
+          </a>
+          {}
+          <a
+            href="/api/progress/export?format=markdown"
+            download
+            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          >
+            Export Markdown
+          </a>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -135,6 +164,17 @@ export default function ProgressPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Weekly Activity Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Weekly Activity</CardTitle>
+          <CardDescription>Your learning activity over the past 7 days</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <WeeklyActivityChart data={progress.weeklyActivity} />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Enrolled Paths */}

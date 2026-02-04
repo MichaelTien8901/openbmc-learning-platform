@@ -3,6 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import type { ApiResponse } from "@/types";
 
+interface WeeklyActivity {
+  date: string;
+  dayName: string;
+  lessonsCompleted: number;
+  minutesLearned: number;
+}
+
 interface ProgressSummary {
   lessonsCompleted: number;
   totalLessons: number;
@@ -12,6 +19,7 @@ interface ProgressSummary {
   averageQuizScore: number | null;
   currentStreak: number;
   longestStreak: number;
+  weeklyActivity: WeeklyActivity[];
   recentActivity: Array<{
     lessonId: string;
     lessonTitle: string;
@@ -50,6 +58,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<ProgressSummary>>>
           select: {
             id: true,
             title: true,
+            estimatedMinutes: true,
             pathLessons: {
               include: {
                 path: { select: { title: true } },
@@ -137,6 +146,36 @@ export async function GET(): Promise<NextResponse<ApiResponse<ProgressSummary>>>
       };
     });
 
+    // Weekly activity (last 7 days)
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const weeklyActivity: WeeklyActivity[] = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+      const nextDate = new Date(date);
+      nextDate.setDate(nextDate.getDate() + 1);
+
+      const dayProgress = completedProgress.filter((p) => {
+        if (!p.completedAt) return false;
+        const completedDate = new Date(p.completedAt);
+        return completedDate >= date && completedDate < nextDate;
+      });
+
+      // Estimate minutes based on completed lessons
+      const minutesLearned = dayProgress.reduce((sum, p) => {
+        return sum + (p.lesson.estimatedMinutes || 15);
+      }, 0);
+
+      weeklyActivity.push({
+        date: date.toISOString().split("T")[0],
+        dayName: dayNames[date.getDay()],
+        lessonsCompleted: dayProgress.length,
+        minutesLearned,
+      });
+    }
+
     // Recent activity (last 10)
     const recentActivity = completedProgress.slice(0, 10).map((p) => ({
       lessonId: p.lesson.id,
@@ -154,6 +193,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<ProgressSummary>>>
       averageQuizScore,
       currentStreak,
       longestStreak,
+      weeklyActivity,
       recentActivity,
       enrolledPaths,
     };
