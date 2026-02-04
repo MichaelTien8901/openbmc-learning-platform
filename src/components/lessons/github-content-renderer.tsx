@@ -429,8 +429,22 @@ export function GitHubContentRenderer({
                             <Copy className="h-4 w-4" />
                           )}
                         </Button>
-                        <pre className="!mt-4 !mb-4 overflow-x-auto rounded-lg bg-[#282c34] p-4">
-                          <code className="font-mono text-sm leading-relaxed whitespace-pre text-gray-100">
+                        <pre
+                          className="!mt-4 !mb-4 overflow-x-auto rounded-lg bg-[#282c34] p-4"
+                          style={{
+                            fontFamily:
+                              "'Courier New', Consolas, Monaco, 'Liberation Mono', monospace",
+                          }}
+                        >
+                          <code
+                            className="text-sm leading-relaxed text-gray-100"
+                            style={{
+                              fontFamily:
+                                "'Courier New', Consolas, Monaco, 'Liberation Mono', monospace",
+                              whiteSpace: "pre",
+                              display: "block",
+                            }}
+                          >
                             {codeString}
                           </code>
                         </pre>
