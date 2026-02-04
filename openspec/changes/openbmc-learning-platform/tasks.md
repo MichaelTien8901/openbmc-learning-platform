@@ -130,8 +130,8 @@
 - [ ] 9.9 Add import conflict resolution UI
 - [ ] 9.10 Create code exercise editor with validation script
 - [ ] 9.11 Add exercise testing in sandbox
-- [ ] 9.12 Implement quiz question viewer/editor
-- [ ] 9.13 Add manual quiz question creation
+- [x] 9.12 Implement quiz question viewer/editor
+- [x] 9.13 Add manual quiz question creation
 - [ ] 9.14 Create content version history viewer
 - [ ] 9.15 Implement version restore functionality
 - [ ] 9.16 Add admin role management (editor, admin)
@@ -146,7 +146,7 @@
 - [x] 10.4 Implement progress API (get, update, export)
 - [ ] 10.5 Create sandbox API (start, stop, terminal WebSocket)
 - [ ] 10.6 Implement AI bridge API (audio, ask, quiz)
-- [ ] 10.7 Add API rate limiting middleware
+- [x] 10.7 Add API rate limiting middleware
 - [ ] 10.8 Implement API error handling and logging
 - [ ] 10.9 Create API documentation with OpenAPI spec
 
@@ -172,7 +172,7 @@
 - [ ] 12.6 Configure load balancer (nginx)
 - [ ] 12.7 Set up container registry for QEMU images
 - [ ] 12.8 Create deployment documentation
-- [ ] 12.9 Add health check endpoints
+- [x] 12.9 Add health check endpoints
 - [ ] 12.10 Configure monitoring and logging
 
 ## 13. Content Import
