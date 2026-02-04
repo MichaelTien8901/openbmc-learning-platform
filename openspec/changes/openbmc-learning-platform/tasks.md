@@ -152,8 +152,8 @@
 
 ## 11. Testing
 
-- [ ] 11.1 Set up Jest and React Testing Library
-- [ ] 11.2 Write unit tests for auth logic
+- [x] 11.1 Set up Jest and React Testing Library
+- [x] 11.2 Write unit tests for auth logic
 - [ ] 11.3 Write unit tests for progress calculation
 - [ ] 11.4 Write unit tests for sandbox session management
 - [ ] 11.5 Create integration tests for API routes
