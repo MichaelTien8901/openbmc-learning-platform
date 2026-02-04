@@ -90,12 +90,12 @@ export function GitHubContentFrame({
         </Alert>
       )}
 
-      {/* Iframe */}
+      {/* Iframe - uses viewport height for better fit */}
       <iframe
         key={key}
         src={sourceUrl}
         title={title || "Lesson Content"}
-        className="min-h-[600px] w-full flex-1 border-0"
+        className="h-[calc(100vh-200px)] min-h-[600px] w-full border-0"
         onLoad={handleLoad}
         onError={handleError}
         sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"

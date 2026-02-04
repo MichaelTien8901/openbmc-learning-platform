@@ -118,8 +118,13 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
     );
   }
 
+  // Use wider layout for IFRAME mode
+  const isIframeMode = lesson.sourceUrl && lesson.repositoryPath && lesson.displayMode === "IFRAME";
+
   return (
-    <div className="mx-auto max-w-4xl space-y-4 px-4 sm:space-y-6 sm:px-0">
+    <div
+      className={`mx-auto space-y-4 px-4 sm:space-y-6 sm:px-0 ${isIframeMode ? "max-w-7xl" : "max-w-4xl"}`}
+    >
       {/* Skip to content link for accessibility */}
       <a
         href="#lesson-content"
@@ -217,15 +222,19 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
       {/* Lesson Content - GitHub or Local */}
       {lesson.sourceUrl && lesson.repositoryPath ? (
         // GitHub Content Delivery Mode
-        <div className="grid gap-6 lg:grid-cols-[1fr_250px]">
+        lesson.displayMode === "IFRAME" ? (
+          // IFRAME mode - full width, taller
           <Card className="overflow-hidden">
-            {lesson.displayMode === "IFRAME" ? (
-              <GitHubContentFrame
-                sourceUrl={lesson.sourceUrl}
-                title={lesson.title}
-                className="min-h-[600px]"
-              />
-            ) : (
+            <GitHubContentFrame
+              sourceUrl={lesson.sourceUrl}
+              title={lesson.title}
+              className="min-h-[800px]"
+            />
+          </Card>
+        ) : (
+          // RENDER mode - with sidebar
+          <div className="grid gap-6 lg:grid-cols-[1fr_250px]">
+            <Card className="overflow-hidden">
               <GitHubContentRenderer
                 repositoryPath={lesson.repositoryPath}
                 sourceUrl={lesson.sourceUrl}
@@ -238,18 +247,16 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
                   }
                 }}
               />
-            )}
-          </Card>
+            </Card>
 
-          {/* Table of Contents Sidebar - only for RENDER mode */}
-          {lesson.displayMode === "RENDER" && (
+            {/* Table of Contents Sidebar */}
             <aside className="hidden lg:block" aria-label="Table of contents">
               <div className="sticky top-24">
                 <TableOfContents content={lesson.content} />
               </div>
             </aside>
-          )}
-        </div>
+          </div>
+        )
       ) : (
         // Fallback: Local content with TOC Sidebar
         <div className="grid gap-6 lg:grid-cols-[1fr_250px]">
