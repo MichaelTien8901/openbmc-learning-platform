@@ -183,4 +183,4 @@
 - [ ] 13.4 Upload documentation to NotebookLM notebooks
 - [x] 13.5 Generate initial quizzes for imported lessons
 - [ ] 13.6 Review and curate imported content
-- [ ] 13.7 Create initial learning path sequences
+- [x] 13.7 Create initial learning path sequences
