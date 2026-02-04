@@ -154,7 +154,7 @@
 
 - [x] 11.1 Set up Jest and React Testing Library
 - [x] 11.2 Write unit tests for auth logic
-- [ ] 11.3 Write unit tests for progress calculation
+- [x] 11.3 Write unit tests for progress calculation
 - [ ] 11.4 Write unit tests for sandbox session management
 - [ ] 11.5 Create integration tests for API routes
 - [ ] 11.6 Add end-to-end tests with Playwright
