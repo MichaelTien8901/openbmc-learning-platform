@@ -99,7 +99,7 @@
 
 ## 8. NotebookLM Integration + Browser TTS
 
-- [ ] 8.1 Set up MCP client/service for NotebookLM connection
+- [x] 8.1 Set up MCP client/service for NotebookLM connection
 - [ ] 8.2 Implement connection health check endpoint
 - [ ] 8.3 Create content generation service (queries NotebookLM for detailed teaching content)
 - [ ] 8.4 Add generated content caching to database

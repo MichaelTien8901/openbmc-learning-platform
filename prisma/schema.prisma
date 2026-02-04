@@ -365,3 +365,36 @@ model ContentVersion {
   @@index([entityType, entityId])
   @@index([entityId, version])
 }
+
+// ============================================================================
+// AI/NotebookLM Integration
+// ============================================================================
+
+model GeneratedContent {
+  id        String              @id @default(cuid())
+  lessonId  String
+  type      GeneratedContentType
+  content   String              @db.Text // JSON stringified content
+  metadata  Json?               // Additional metadata (topic, notebookId, etc.)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@index([lessonId, type])
+  @@index([createdAt])
+}
+
+enum GeneratedContentType {
+  TEACHING_CONTENT
+  QUIZ
+  SUMMARY
+}
+
+model AIResponseCache {
+  cacheKey  String   @id
+  response  String   @db.Text // JSON stringified response
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([expiresAt])
+}
