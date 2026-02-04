@@ -424,6 +424,168 @@ In the following lessons, we'll explore methods, signals, and properties in deta
 
   console.log("Created D-Bus lessons");
 
+  // Create Sensor Management lessons
+  const sensorLesson1 = await prisma.lesson.upsert({
+    where: { slug: "sensor-overview" },
+    update: {},
+    create: {
+      slug: "sensor-overview",
+      title: "Sensor Overview in OpenBMC",
+      description: "Understanding the sensor architecture in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/sensors/overview/`,
+      repositoryPath: "docs/sensors/overview.md",
+      displayMode: "IFRAME",
+      content: `# Sensor Overview in OpenBMC
+
+OpenBMC provides comprehensive sensor monitoring capabilities for hardware management.
+
+## Sensor Types
+
+- **Temperature sensors**: Monitor CPU, memory, and ambient temperatures
+- **Voltage sensors**: Track power rail voltages
+- **Fan sensors**: Monitor fan speeds (RPM)
+- **Power sensors**: Measure power consumption
+
+## Sensor Architecture
+
+Sensors in OpenBMC are exposed via D-Bus interfaces under \`xyz.openbmc_project.Sensor\`.
+
+\`\`\`bash
+# List all sensors
+busctl tree xyz.openbmc_project.HwmonTempSensor
+\`\`\`
+
+## Key Interfaces
+
+- \`xyz.openbmc_project.Sensor.Value\`: Current sensor reading
+- \`xyz.openbmc_project.Sensor.Threshold.Critical\`: Critical thresholds
+- \`xyz.openbmc_project.Sensor.Threshold.Warning\`: Warning thresholds
+`,
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 20,
+      published: true,
+    },
+  });
+
+  const sensorLesson2 = await prisma.lesson.upsert({
+    where: { slug: "sensor-configuration" },
+    update: {},
+    create: {
+      slug: "sensor-configuration",
+      title: "Configuring Sensors",
+      description: "Learn how to configure and customize sensor behavior",
+      sourceUrl: `${GITHUB_PAGES_BASE}/sensors/configuration/`,
+      repositoryPath: "docs/sensors/configuration.md",
+      displayMode: "IFRAME",
+      content: `# Configuring Sensors
+
+This lesson covers sensor configuration in OpenBMC.
+
+## Entity Manager
+
+Entity Manager uses JSON configuration files to define sensors:
+
+\`\`\`json
+{
+  "Name": "CPU_Temp",
+  "Type": "temperature",
+  "Index": 0,
+  "Thresholds": [
+    {"Direction": "greater than", "Severity": "Warning", "Value": 85},
+    {"Direction": "greater than", "Severity": "Critical", "Value": 95}
+  ]
+}
+\`\`\`
+
+## Hwmon Integration
+
+OpenBMC reads hardware sensors via the Linux hwmon subsystem.
+
+## Best Practices
+
+1. Set appropriate thresholds for your hardware
+2. Use meaningful sensor names
+3. Configure polling intervals based on criticality
+`,
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: sensorLesson1.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: sensorLesson1.id, order: 1 },
+  });
+
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: sensorLesson2.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: sensorLesson2.id, order: 2 },
+  });
+
+  console.log("Created Sensor Management lessons");
+
+  // Create Yocto Recipes lessons
+  const recipeLesson1 = await prisma.lesson.upsert({
+    where: { slug: "recipe-basics" },
+    update: {},
+    create: {
+      slug: "recipe-basics",
+      title: "Yocto Recipe Basics",
+      description: "Introduction to writing Yocto recipes for OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/recipes/basics/`,
+      repositoryPath: "docs/recipes/basics.md",
+      displayMode: "IFRAME",
+      content: `# Yocto Recipe Basics
+
+Learn the fundamentals of writing Yocto recipes for OpenBMC.
+
+## Recipe Structure
+
+A basic recipe includes:
+
+\`\`\`bash
+SUMMARY = "My OpenBMC Application"
+DESCRIPTION = "A custom application for OpenBMC"
+LICENSE = "Apache-2.0"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=..."
+
+SRC_URI = "git://github.com/example/repo.git;branch=main;protocol=https"
+SRCREV = "abc123..."
+
+S = "\${WORKDIR}/git"
+
+inherit meson
+
+DEPENDS = "sdbusplus phosphor-logging"
+\`\`\`
+
+## Key Variables
+
+- \`SRC_URI\`: Where to fetch source code
+- \`DEPENDS\`: Build-time dependencies
+- \`RDEPENDS\`: Runtime dependencies
+
+## Inheritance
+
+Common classes: \`meson\`, \`cmake\`, \`systemd\`, \`obmc-phosphor-systemd\`
+`,
+      difficulty: "ADVANCED",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: recipesPath.id, lessonId: recipeLesson1.id } },
+    update: {},
+    create: { pathId: recipesPath.id, lessonId: recipeLesson1.id, order: 1 },
+  });
+
+  console.log("Created Yocto Recipes lessons");
+
   // Create quiz questions
   await prisma.quizQuestion.upsert({
     where: { id: "quiz-1-q1" },
