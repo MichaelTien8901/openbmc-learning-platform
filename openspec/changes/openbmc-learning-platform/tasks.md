@@ -75,9 +75,9 @@
 - [x] 6.10 Create path progress indicator bar
 - [x] 6.11 Implement bookmark functionality
 - [x] 6.12 Add note-taking panel with save/export
-- [ ] 6.13 Ensure keyboard navigation accessibility
-- [ ] 6.14 Add screen reader ARIA labels
-- [ ] 6.15 Implement responsive mobile layout
+- [x] 6.13 Ensure keyboard navigation accessibility
+- [x] 6.14 Add screen reader ARIA labels
+- [x] 6.15 Implement responsive mobile layout
 
 ## 7. Code Sandbox
 

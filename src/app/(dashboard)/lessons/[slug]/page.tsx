@@ -114,32 +114,54 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-4 px-4 sm:space-y-6 sm:px-0">
+      {/* Skip to content link for accessibility */}
+      <a
+        href="#lesson-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-white"
+      >
+        Skip to lesson content
+      </a>
+
       {/* Breadcrumb & Navigation */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+      <nav
+        aria-label="Breadcrumb"
+        className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <ol
+          className="flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400"
+          role="list"
+        >
           {lesson.path && (
             <>
-              <Link
-                href={`/paths/${lesson.path.slug}`}
-                className="hover:text-gray-900 dark:hover:text-white"
-              >
-                {lesson.path.title}
-              </Link>
-              <span>/</span>
+              <li>
+                <Link
+                  href={`/paths/${lesson.path.slug}`}
+                  className="hover:text-gray-900 dark:hover:text-white"
+                >
+                  {lesson.path.title}
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
             </>
           )}
-          <span className="text-gray-900 dark:text-white">{lesson.title}</span>
-        </div>
+          <li aria-current="page">
+            <span className="text-gray-900 dark:text-white">{lesson.title}</span>
+          </li>
+        </ol>
         <div className="flex items-center gap-2">
           <BookmarkButton lessonId={lesson.id} />
           {lesson.completed && (
-            <span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-800 dark:bg-green-900/30 dark:text-green-400">
+            <span
+              className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-800 dark:bg-green-900/30 dark:text-green-400"
+              role="status"
+              aria-label="Lesson completed"
+            >
               ✓ Completed
             </span>
           )}
         </div>
-      </div>
+      </nav>
 
       {/* Path Progress Bar */}
       {lesson.path && lesson.pathLessons.length > 0 && (
@@ -155,17 +177,31 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
       )}
 
       {/* Lesson Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{lesson.title}</h1>
+      <header>
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
+          {lesson.title}
+        </h1>
         {lesson.description && (
           <p className="mt-2 text-gray-600 dark:text-gray-400">{lesson.description}</p>
         )}
-        <div className="mt-3 flex gap-4 text-sm text-gray-500 dark:text-gray-400">
-          <span>{lesson.estimatedMinutes} min read</span>
-          <span className="capitalize">{lesson.difficulty.toLowerCase()}</span>
-          {lesson.hasCodeExercise && <span>Includes exercise</span>}
+        <div
+          className="mt-3 flex flex-wrap gap-3 text-sm text-gray-500 sm:gap-4 dark:text-gray-400"
+          aria-label="Lesson details"
+        >
+          <span aria-label={`Estimated reading time: ${lesson.estimatedMinutes} minutes`}>
+            {lesson.estimatedMinutes} min read
+          </span>
+          <span
+            aria-label={`Difficulty: ${lesson.difficulty.toLowerCase()}`}
+            className="capitalize"
+          >
+            {lesson.difficulty.toLowerCase()}
+          </span>
+          {lesson.hasCodeExercise && (
+            <span aria-label="This lesson includes a code exercise">Includes exercise</span>
+          )}
         </div>
-      </div>
+      </header>
 
       {error && (
         <div className="rounded-md bg-red-50 p-4 text-red-600 dark:bg-red-900/20 dark:text-red-400">
@@ -191,8 +227,13 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
       {/* Lesson Content with TOC Sidebar */}
       <div className="grid gap-6 lg:grid-cols-[1fr_250px]">
         <Card>
-          <CardContent className="prose prose-gray dark:prose-invert max-w-none py-8">
-            <div
+          <CardContent className="prose prose-gray dark:prose-invert max-w-none px-4 py-6 sm:px-6 sm:py-8">
+            <main
+              id="lesson-content"
+              role="main"
+              aria-label="Lesson content"
+              tabIndex={-1}
+              className="focus:outline-none"
               dangerouslySetInnerHTML={{
                 __html: renderMarkdown(lesson.content),
               }}
@@ -201,7 +242,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
         </Card>
 
         {/* Table of Contents Sidebar */}
-        <aside className="hidden lg:block">
+        <aside className="hidden lg:block" aria-label="Table of contents">
           <div className="sticky top-24">
             <TableOfContents content={lesson.content} />
           </div>
@@ -223,33 +264,57 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
       <NotesPanel lessonId={lesson.id} lessonTitle={lesson.title} />
 
       {/* Navigation */}
-      <div className="flex items-center justify-between border-t border-gray-200 pt-6 dark:border-gray-800">
+      <nav
+        aria-label="Lesson navigation"
+        className="flex flex-col gap-4 border-t border-gray-200 pt-6 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800"
+      >
         <div>
           {lesson.prevLesson && (
-            <Button variant="outline" asChild>
-              <Link href={`/lessons/${lesson.prevLesson.slug}`}>← {lesson.prevLesson.title}</Link>
+            <Button variant="outline" asChild className="w-full sm:w-auto">
+              <Link
+                href={`/lessons/${lesson.prevLesson.slug}`}
+                aria-label={`Previous lesson: ${lesson.prevLesson.title}`}
+              >
+                <span aria-hidden="true">← </span>
+                <span className="hidden sm:inline">{lesson.prevLesson.title}</span>
+                <span className="sm:hidden">Previous</span>
+              </Link>
             </Button>
           )}
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
           {!lesson.completed && (
-            <Button onClick={handleComplete} disabled={isCompleting}>
+            <Button
+              onClick={handleComplete}
+              disabled={isCompleting}
+              aria-label="Mark this lesson as complete"
+              className="w-full sm:w-auto"
+            >
               {isCompleting ? "Saving..." : "Mark Complete"}
             </Button>
           )}
           {lesson.nextLesson && (
-            <Button asChild>
-              <Link href={`/lessons/${lesson.nextLesson.slug}`}>{lesson.nextLesson.title} →</Link>
+            <Button asChild className="w-full sm:w-auto">
+              <Link
+                href={`/lessons/${lesson.nextLesson.slug}`}
+                aria-label={`Next lesson: ${lesson.nextLesson.title}`}
+              >
+                <span className="hidden sm:inline">{lesson.nextLesson.title}</span>
+                <span className="sm:hidden">Next</span>
+                <span aria-hidden="true"> →</span>
+              </Link>
             </Button>
           )}
           {!lesson.nextLesson && lesson.path && (
-            <Button asChild>
-              <Link href={`/paths/${lesson.path.slug}`}>Back to Path</Link>
+            <Button asChild className="w-full sm:w-auto">
+              <Link href={`/paths/${lesson.path.slug}`} aria-label="Return to learning path">
+                Back to Path
+              </Link>
             </Button>
           )}
         </div>
-      </div>
+      </nav>
     </div>
   );
 }

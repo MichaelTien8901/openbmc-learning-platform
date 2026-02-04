@@ -224,7 +224,10 @@ export function TTSPlayer({
   const totalSentences = paragraphs.length || 1;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
+    <section
+      aria-label="Text-to-speech audio player"
+      className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900"
+    >
       {title && (
         <h3 className="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">
           Listen to Lesson
@@ -233,14 +236,21 @@ export function TTSPlayer({
 
       {/* Progress Bar */}
       <div className="mb-4">
-        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+        <div
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`Playback progress: ${progress}%`}
+          className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
+        >
           <div
             className="h-full rounded-full bg-blue-600 transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
         <div className="mt-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>
+          <span aria-live="polite">
             {currentParagraph + 1} / {totalSentences} sentences
           </span>
           <span>{progress}%</span>
@@ -248,23 +258,32 @@ export function TTSPlayer({
       </div>
 
       {/* Playback Controls */}
-      <div className="mb-4 flex items-center justify-center gap-2">
+      <div
+        className="mb-4 flex flex-wrap items-center justify-center gap-2"
+        role="group"
+        aria-label="Playback controls"
+      >
         <Button
           variant="outline"
           size="sm"
           onClick={handleSkipBack}
           disabled={currentParagraph === 0}
-          title="Previous sentence"
+          aria-label="Previous sentence"
         >
-          ⏮
+          <span aria-hidden="true">⏮</span>
         </Button>
 
         {isPlaying && !isPaused ? (
-          <Button onClick={handlePause} size="sm" className="w-20">
+          <Button onClick={handlePause} size="sm" className="w-20" aria-label="Pause audio">
             Pause
           </Button>
         ) : (
-          <Button onClick={handlePlay} size="sm" className="w-20">
+          <Button
+            onClick={handlePlay}
+            size="sm"
+            className="w-20"
+            aria-label={isPaused ? "Resume audio" : "Play audio"}
+          >
             {isPaused ? "Resume" : "Play"}
           </Button>
         )}
@@ -274,9 +293,9 @@ export function TTSPlayer({
           size="sm"
           onClick={handleStop}
           disabled={!isPlaying && !isPaused}
-          title="Stop"
+          aria-label="Stop audio"
         >
-          ⏹
+          <span aria-hidden="true">⏹</span>
         </Button>
 
         <Button
@@ -284,9 +303,9 @@ export function TTSPlayer({
           size="sm"
           onClick={handleSkipForward}
           disabled={currentParagraph >= paragraphs.length - 1}
-          title="Next sentence"
+          aria-label="Next sentence"
         >
-          ⏭
+          <span aria-hidden="true">⏭</span>
         </Button>
       </div>
 
@@ -332,7 +351,11 @@ export function TTSPlayer({
 
       {/* Currently Speaking */}
       {isPlaying && currentText && (
-        <div className="mt-4 rounded border border-blue-200 bg-blue-50 p-3 dark:border-blue-900 dark:bg-blue-900/20">
+        <div
+          className="mt-4 rounded border border-blue-200 bg-blue-50 p-3 dark:border-blue-900 dark:bg-blue-900/20"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <p className="text-xs text-blue-600 dark:text-blue-400">Now speaking:</p>
           <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
             &quot;{currentText.substring(0, 150)}
@@ -340,6 +363,6 @@ export function TTSPlayer({
           </p>
         </div>
       )}
-    </div>
+    </section>
   );
 }
