@@ -49,7 +49,7 @@ export async function fetchRawContent(
     headers: {
       Accept: "text/plain",
     },
-    next: { revalidate: 3600 }, // Cache for 1 hour
+    cache: "no-store", // Always fetch fresh content
   });
 
   if (!response.ok) {
@@ -88,7 +88,7 @@ export async function fetchContentViaApi(
 
   const response = await fetch(apiUrl, {
     headers,
-    next: { revalidate: 3600 },
+    cache: "no-store", // Always fetch fresh content
   });
 
   if (!response.ok) {
@@ -134,7 +134,7 @@ export async function listDirectory(
 
   const response = await fetch(apiUrl, {
     headers,
-    next: { revalidate: 3600 },
+    cache: "no-store", // Always fetch fresh content
   });
 
   if (!response.ok) {
