@@ -146,13 +146,17 @@ async function main() {
   // Create Lessons for Getting Started path
   const lesson1 = await prisma.lesson.upsert({
     where: { slug: "what-is-openbmc" },
-    update: {},
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/01-introduction`,
+      repositoryPath: "docs/01-getting-started/01-introduction.md",
+      displayMode: "IFRAME",
+    },
     create: {
       slug: "what-is-openbmc",
       title: "What is OpenBMC?",
       description: "Introduction to OpenBMC and its role in server management",
-      sourceUrl: `${GITHUB_PAGES_BASE}/intro/what-is-openbmc/`,
-      repositoryPath: "docs/intro/what-is-openbmc.md",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/01-introduction`,
+      repositoryPath: "docs/01-getting-started/01-introduction.md",
       displayMode: "IFRAME",
       content: `# What is OpenBMC?
 
@@ -190,13 +194,17 @@ In the following lessons, we'll explore the OpenBMC architecture in detail and s
 
   const lesson2 = await prisma.lesson.upsert({
     where: { slug: "openbmc-architecture" },
-    update: {},
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/01-openbmc-overview`,
+      repositoryPath: "docs/02-architecture/01-openbmc-overview.md",
+      displayMode: "IFRAME",
+    },
     create: {
       slug: "openbmc-architecture",
       title: "OpenBMC Architecture",
       description: "Deep dive into the components that make up OpenBMC",
-      sourceUrl: `${GITHUB_PAGES_BASE}/intro/architecture/`,
-      repositoryPath: "docs/intro/architecture.md",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/01-openbmc-overview`,
+      repositoryPath: "docs/02-architecture/01-openbmc-overview.md",
       displayMode: "IFRAME",
       content: `# OpenBMC Architecture
 
@@ -258,13 +266,17 @@ Now that you understand the architecture, let's set up your development environm
 
   const lesson3 = await prisma.lesson.upsert({
     where: { slug: "development-environment-setup" },
-    update: {},
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/02-environment-setup`,
+      repositoryPath: "docs/01-getting-started/02-environment-setup.md",
+      displayMode: "IFRAME",
+    },
     create: {
       slug: "development-environment-setup",
       title: "Setting Up Your Development Environment",
       description: "Configure your workstation for OpenBMC development",
-      sourceUrl: `${GITHUB_PAGES_BASE}/setup/development-environment/`,
-      repositoryPath: "docs/setup/development-environment.md",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/02-environment-setup`,
+      repositoryPath: "docs/01-getting-started/02-environment-setup.md",
       displayMode: "IFRAME",
       content: `# Setting Up Your Development Environment
 
@@ -367,13 +379,17 @@ Congratulations! You now have a working OpenBMC development environment.
   // Create D-Bus lessons
   const dbusLesson1 = await prisma.lesson.upsert({
     where: { slug: "dbus-introduction" },
-    update: {},
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/02-dbus-guide`,
+      repositoryPath: "docs/02-architecture/02-dbus-guide.md",
+      displayMode: "IFRAME",
+    },
     create: {
       slug: "dbus-introduction",
       title: "Introduction to D-Bus",
       description: "Learn the fundamentals of D-Bus communication",
-      sourceUrl: `${GITHUB_PAGES_BASE}/dbus/introduction/`,
-      repositoryPath: "docs/dbus/introduction.md",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/02-dbus-guide`,
+      repositoryPath: "docs/02-architecture/02-dbus-guide.md",
       displayMode: "IFRAME",
       content: `# Introduction to D-Bus
 
@@ -427,13 +443,17 @@ In the following lessons, we'll explore methods, signals, and properties in deta
   // Create Sensor Management lessons
   const sensorLesson1 = await prisma.lesson.upsert({
     where: { slug: "sensor-overview" },
-    update: {},
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/01-dbus-sensors-guide`,
+      repositoryPath: "docs/03-core-services/01-dbus-sensors-guide.md",
+      displayMode: "IFRAME",
+    },
     create: {
       slug: "sensor-overview",
       title: "Sensor Overview in OpenBMC",
       description: "Understanding the sensor architecture in OpenBMC",
-      sourceUrl: `${GITHUB_PAGES_BASE}/sensors/overview/`,
-      repositoryPath: "docs/sensors/overview.md",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/01-dbus-sensors-guide`,
+      repositoryPath: "docs/03-core-services/01-dbus-sensors-guide.md",
       displayMode: "IFRAME",
       content: `# Sensor Overview in OpenBMC
 
@@ -469,13 +489,17 @@ busctl tree xyz.openbmc_project.HwmonTempSensor
 
   const sensorLesson2 = await prisma.lesson.upsert({
     where: { slug: "sensor-configuration" },
-    update: {},
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/03-entity-manager-guide`,
+      repositoryPath: "docs/03-core-services/03-entity-manager-guide.md",
+      displayMode: "IFRAME",
+    },
     create: {
       slug: "sensor-configuration",
       title: "Configuring Sensors",
       description: "Learn how to configure and customize sensor behavior",
-      sourceUrl: `${GITHUB_PAGES_BASE}/sensors/configuration/`,
-      repositoryPath: "docs/sensors/configuration.md",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/03-entity-manager-guide`,
+      repositoryPath: "docs/03-core-services/03-entity-manager-guide.md",
       displayMode: "IFRAME",
       content: `# Configuring Sensors
 
@@ -530,13 +554,17 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
   // Create Yocto Recipes lessons
   const recipeLesson1 = await prisma.lesson.upsert({
     where: { slug: "recipe-basics" },
-    update: {},
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/02-machine-layer`,
+      repositoryPath: "docs/06-porting/02-machine-layer.md",
+      displayMode: "IFRAME",
+    },
     create: {
       slug: "recipe-basics",
       title: "Yocto Recipe Basics",
       description: "Introduction to writing Yocto recipes for OpenBMC",
-      sourceUrl: `${GITHUB_PAGES_BASE}/recipes/basics/`,
-      repositoryPath: "docs/recipes/basics.md",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/02-machine-layer`,
+      repositoryPath: "docs/06-porting/02-machine-layer.md",
       displayMode: "IFRAME",
       content: `# Yocto Recipe Basics
 

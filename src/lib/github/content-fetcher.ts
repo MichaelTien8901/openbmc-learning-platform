@@ -31,7 +31,7 @@ export interface RepoFile {
 export const DEFAULT_CONFIG: GitHubContentConfig = {
   owner: "MichaelTien8901",
   repo: "openbmc-guide-tutorial",
-  branch: "main",
+  branch: "master",
   pagesBaseUrl: "https://MichaelTien8901.github.io/openbmc-guide-tutorial",
 };
 

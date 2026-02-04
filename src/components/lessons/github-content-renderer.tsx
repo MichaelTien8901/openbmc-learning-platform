@@ -38,7 +38,7 @@ interface TOCItem {
 
 // GitHub repository info for URL rewriting
 const GITHUB_RAW_BASE =
-  "https://raw.githubusercontent.com/MichaelTien8901/openbmc-guide-tutorial/main";
+  "https://raw.githubusercontent.com/MichaelTien8901/openbmc-guide-tutorial/master";
 const GITHUB_PAGES_BASE = "https://michaeltien8901.github.io/openbmc-guide-tutorial";
 
 /**
