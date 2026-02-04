@@ -21,6 +21,10 @@ interface LessonDetail {
   hasCodeExercise: boolean;
   completed: boolean;
   lastPosition: number;
+  // GitHub content delivery fields
+  sourceUrl: string | null;
+  repositoryPath: string | null;
+  displayMode: "IFRAME" | "RENDER";
   path: {
     id: string;
     slug: string;
@@ -144,6 +148,10 @@ export async function GET(
       hasCodeExercise: lesson.hasCodeExercise,
       completed,
       lastPosition,
+      // GitHub content delivery fields
+      sourceUrl: lesson.sourceUrl,
+      repositoryPath: lesson.repositoryPath,
+      displayMode: lesson.displayMode,
       path: pathLesson
         ? {
             id: pathLesson.path.id,
