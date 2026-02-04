@@ -1,0 +1,367 @@
+// OpenBMC Learning Platform Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// User & Authentication
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  displayName   String?
+  role          UserRole  @default(LEARNER)
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  progress      UserProgress[]
+  quizAttempts  QuizAttempt[]
+  codeSessions  CodeSession[]
+  bookmarks     Bookmark[]
+  notes         Note[]
+  enrollments   PathEnrollment[]
+  verifyTokens  VerificationToken[]
+  resetTokens   PasswordResetToken[]
+
+  @@index([email])
+}
+
+enum UserRole {
+  LEARNER
+  EDITOR
+  ADMIN
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+// ============================================================================
+// Learning Paths & Lessons
+// ============================================================================
+
+model LearningPath {
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  title        String
+  description  String
+  difficulty   Difficulty     @default(BEGINNER)
+  estimatedHours Int          @default(0)
+  imageUrl     String?
+  published    Boolean        @default(false)
+  order        Int            @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  // Relations
+  lessons      PathLesson[]
+  enrollments  PathEnrollment[]
+  prerequisites PathPrerequisite[] @relation("PathWithPrerequisites")
+  prerequisiteFor PathPrerequisite[] @relation("PrerequisitePath")
+
+  @@index([slug])
+  @@index([published])
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model PathPrerequisite {
+  id             String @id @default(cuid())
+  pathId         String
+  prerequisiteId String
+
+  path         LearningPath @relation("PathWithPrerequisites", fields: [pathId], references: [id], onDelete: Cascade)
+  prerequisite LearningPath @relation("PrerequisitePath", fields: [prerequisiteId], references: [id], onDelete: Cascade)
+
+  @@unique([pathId, prerequisiteId])
+}
+
+model PathEnrollment {
+  id          String   @id @default(cuid())
+  userId      String
+  pathId      String
+  enrolledAt  DateTime @default(now())
+  completedAt DateTime?
+
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  path LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pathId])
+  @@index([userId])
+  @@index([pathId])
+}
+
+model Lesson {
+  id              String      @id @default(cuid())
+  slug            String      @unique
+  title           String
+  description     String?
+  content         String      @db.Text
+  contentType     ContentType @default(MARKDOWN)
+  difficulty      Difficulty  @default(BEGINNER)
+  estimatedMinutes Int        @default(15)
+  hasCodeExercise Boolean     @default(false)
+  notebookId      String?     // NotebookLM notebook reference
+  published       Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  pathLessons   PathLesson[]
+  progress      UserProgress[]
+  quizQuestions QuizQuestion[]
+  quizAttempts  QuizAttempt[]
+  codeSessions  CodeSession[]
+  bookmarks     Bookmark[]
+  notes         Note[]
+  exercises     CodeExercise[]
+
+  @@index([slug])
+  @@index([published])
+}
+
+enum ContentType {
+  MARKDOWN
+  VIDEO
+  AUDIO
+}
+
+model PathLesson {
+  id       String @id @default(cuid())
+  pathId   String
+  lessonId String
+  order    Int    @default(0)
+
+  path   LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  lesson Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([pathId, lessonId])
+  @@index([pathId])
+  @@index([lessonId])
+}
+
+// ============================================================================
+// Progress Tracking
+// ============================================================================
+
+model UserProgress {
+  id           String           @id @default(cuid())
+  userId       String
+  lessonId     String
+  status       ProgressStatus   @default(NOT_STARTED)
+  startedAt    DateTime?
+  completedAt  DateTime?
+  lastPosition Int              @default(0) // For audio/video resume
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+  @@index([userId, status])
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+// ============================================================================
+// Quizzes
+// ============================================================================
+
+model QuizQuestion {
+  id           String       @id @default(cuid())
+  lessonId     String
+  question     String       @db.Text
+  options      Json         // Array of {text: string, isCorrect: boolean}
+  explanation  String?      @db.Text
+  source       QuizSource   @default(MANUAL)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  lesson  Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
+
+  @@index([lessonId])
+}
+
+enum QuizSource {
+  MANUAL
+  NOTEBOOKLM
+}
+
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  score       Float    // Percentage 0-100
+  totalQuestions Int
+  correctAnswers Int
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson  Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
+
+  @@index([userId])
+  @@index([lessonId])
+  @@index([userId, lessonId])
+}
+
+model QuizAnswer {
+  id           String @id @default(cuid())
+  attemptId    String
+  questionId   String
+  selectedOption Int  // Index of selected option
+  isCorrect    Boolean
+
+  attempt  QuizAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+}
+
+// ============================================================================
+// Code Sandbox
+// ============================================================================
+
+model CodeSession {
+  id          String        @id @default(cuid())
+  userId      String
+  lessonId    String?
+  exerciseId  String?
+  containerId String?
+  status      SessionStatus @default(PENDING)
+  startedAt   DateTime      @default(now())
+  expiresAt   DateTime
+  lastActiveAt DateTime     @default(now())
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson   Lesson?       @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  exercise CodeExercise? @relation(fields: [exerciseId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+enum SessionStatus {
+  PENDING
+  RUNNING
+  STOPPED
+  EXPIRED
+  ERROR
+}
+
+model CodeExercise {
+  id              String   @id @default(cuid())
+  lessonId        String
+  title           String
+  description     String   @db.Text
+  starterCode     String?  @db.Text
+  solutionCode    String?  @db.Text
+  validationScript String? @db.Text
+  hints           Json?    // Array of hint strings
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  lesson   Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  sessions CodeSession[]
+
+  @@index([lessonId])
+}
+
+// ============================================================================
+// User Content (Bookmarks & Notes)
+// ============================================================================
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  lessonId  String
+  position  Int?     // Position in content (for audio/scroll position)
+  note      String?
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  lessonId  String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([lessonId])
+  @@index([userId, lessonId])
+}
+
+// ============================================================================
+// Content Versioning
+// ============================================================================
+
+model ContentVersion {
+  id         String   @id @default(cuid())
+  entityType String   // "lesson", "path", etc.
+  entityId   String
+  version    Int
+  content    Json     // Snapshot of the content
+  changedBy  String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([entityId, version])
+}

@@ -1,6 +1,7 @@
 ## Context
 
 The OpenBMC community lacks an interactive learning platform. Currently, developers learn from:
+
 - Static documentation (openbmc-guide-tutorial Jekyll site)
 - Mailing lists and IRC/Discord discussions
 - Trial and error with QEMU environments
@@ -8,12 +9,14 @@ The OpenBMC community lacks an interactive learning platform. Currently, develop
 This creates a high barrier to entry. A structured learning platform with guided paths, progress tracking, and interactive exercises would significantly improve onboarding.
 
 **Constraints:**
+
 - Minimize custom AI development by leveraging NotebookLM
 - Support offline/self-hosted deployment for enterprises
 - OpenBMC code execution requires QEMU (resource-intensive)
 - Content must stay synchronized with upstream documentation
 
 **Stakeholders:**
+
 - OpenBMC newcomers (primary users)
 - Experienced developers seeking specific topics
 - Platform administrators managing content
@@ -22,6 +25,7 @@ This creates a high barrier to entry. A structured learning platform with guided
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Provide structured learning paths from beginner to advanced
 - Track individual progress with completion states and scores
 - Enable hands-on coding practice with real OpenBMC environments
@@ -30,6 +34,7 @@ This creates a high barrier to entry. A structured learning platform with guided
 - Import content from existing openbmc-guide-tutorial docs
 
 **Non-Goals:**
+
 - Building custom AI/ML models for content generation
 - Real hardware integration (QEMU only for MVP)
 - Certification or credentialing system
@@ -44,6 +49,7 @@ This creates a high barrier to entry. A structured learning platform with guided
 **Decision:** Use Next.js with App Router for the frontend.
 
 **Rationale:**
+
 - Server-side rendering improves SEO and initial load
 - App Router provides excellent code organization
 - Strong TypeScript support
@@ -51,6 +57,7 @@ This creates a high barrier to entry. A structured learning platform with guided
 - API routes can handle simple backend needs
 
 **Alternatives Considered:**
+
 - Remix: Similar benefits but smaller ecosystem
 - Vite + React: No SSR out of box, need more setup
 - Vue/Nuxt: Team familiarity favors React ecosystem
@@ -60,12 +67,14 @@ This creates a high barrier to entry. A structured learning platform with guided
 **Decision:** Single Next.js application with logical service separation, not microservices.
 
 **Rationale:**
+
 - Reduces operational complexity for MVP
 - Next.js API routes + Server Actions sufficient for initial scale
 - Can extract services later if needed
 - Easier self-hosted deployment (single container)
 
 **Alternatives Considered:**
+
 - Microservices: Premature complexity for MVP
 - Separate FastAPI backend: Extra deployment, good for Python ML (not needed with NotebookLM)
 - Serverless functions: Cold start issues for QEMU sandbox
@@ -75,12 +84,14 @@ This creates a high barrier to entry. A structured learning platform with guided
 **Decision:** PostgreSQL for primary storage, Prisma for type-safe database access.
 
 **Rationale:**
+
 - PostgreSQL handles relational data (users, courses, progress) well
 - Prisma provides excellent TypeScript integration
 - JSON columns for flexible lesson metadata
 - Proven scalability for LMS workloads
 
 **Alternatives Considered:**
+
 - MongoDB: Overkill flexibility, weaker relational queries
 - SQLite: Insufficient for multi-user production
 - Drizzle ORM: Newer, less ecosystem support
@@ -90,12 +101,14 @@ This creates a high barrier to entry. A structured learning platform with guided
 **Decision:** Use NextAuth.js for authentication with multiple providers.
 
 **Rationale:**
+
 - Native Next.js integration
 - Supports OAuth (Google, GitHub) + email/password
 - Session management built-in
 - Database adapter for Prisma available
 
 **Alternatives Considered:**
+
 - Clerk/Auth0: Adds external dependency, cost at scale
 - Custom JWT: More work, security risk
 - Supabase Auth: Ties to Supabase ecosystem
@@ -105,6 +118,7 @@ This creates a high barrier to entry. A structured learning platform with guided
 **Decision:** Run QEMU ast2600-evb in Docker containers, accessed via web terminal.
 
 **Architecture:**
+
 ```
 Browser → WebSocket → Sandbox Service → Docker Container → QEMU
                                               ↓
@@ -112,54 +126,70 @@ Browser → WebSocket → Sandbox Service → Docker Container → QEMU
 ```
 
 **Rationale:**
+
 - QEMU required for realistic OpenBMC environment
 - Container isolation for security and resource limits
 - WebSocket provides real-time terminal interaction
 - xterm.js for browser terminal emulation
 
 **Alternatives Considered:**
+
 - WebContainers: Cannot run QEMU (browser-only Linux)
 - Remote SSH: Security concerns, hard to isolate
 - Pre-built exercises only: Limits hands-on learning
 
 **Resource Management:**
+
 - Container pool with auto-scaling
 - Session timeout (30 min idle)
 - CPU/memory limits per container
 - Shared base images to reduce startup time
 
-### 6. NotebookLM Integration: MCP Protocol via Browser Automation
+### 6. NotebookLM Integration: Content Generation + Browser TTS
 
-**Decision:** Use MCP (Model Context Protocol) to bridge NotebookLM capabilities.
+**Decision:** Use NotebookLM for source-grounded content generation, Browser TTS for audio playback.
 
 **Architecture:**
+
 ```
 Learning Platform → MCP Client → NotebookLM MCP Server → NotebookLM
                                         ↓
-                              Audio, Q&A, Quizzes
+                        Detailed Teaching Content (Text)
+                                        ↓
+                              Browser Web Speech API (TTS)
+                                        ↓
+                                 Audio Playback
 ```
 
 **Rationale:**
-- NotebookLM provides AI features without custom ML
-- MCP is Anthropic's standard for tool integration
-- Existing notebooklm skill provides reference implementation
-- Free tier sufficient for initial deployment
+
+- NotebookLM generates detailed, source-grounded content from documentation
+- Content includes: learning objectives, detailed explanations, code examples, summaries
+- Browser TTS (Web Speech API) provides universal audio playback
+- No dependency on NotebookLM Audio Overview feature (limited to whole-notebook summaries)
+- Users can control playback speed, pause/resume, select voices
+- Offline-capable once content is cached
 
 **Alternatives Considered:**
-- Custom LLM integration: Expensive, complex
-- OpenAI API: No source-grounding like NotebookLM
-- No AI features: Loses key differentiator
 
-**Content Sync:**
-- Batch upload docs to NotebookLM notebooks
-- One notebook per learning path/topic
-- Periodic sync script for doc updates
+- NotebookLM Audio Overview: Only generates whole-notebook summaries, not per-topic
+- Custom LLM integration: Expensive, complex, no source-grounding
+- OpenAI API: No citation to source documentation
+- Server-side TTS: Adds infrastructure complexity, browser TTS is universal
+
+**Content Generation Strategy:**
+
+- Query NotebookLM for detailed teaching content per lesson topic
+- Structure: objectives → concepts → examples → use cases → exercises → summary
+- Cache generated content in database for consistent experience
+- Regenerate on demand when documentation updates
 
 ### 7. Content Structure: Lesson-Based with Markdown Source
 
 **Decision:** Lessons stored as markdown with YAML frontmatter, compiled to database.
 
 **Structure:**
+
 ```yaml
 # lesson.md frontmatter
 title: "Understanding D-Bus in OpenBMC"
@@ -172,12 +202,14 @@ notebooklm_notebook: "openbmc-dbus"
 ```
 
 **Rationale:**
+
 - Markdown familiar to doc contributors
 - Easy to sync from openbmc-guide-tutorial
 - Frontmatter provides structured metadata
 - Compile step validates and indexes content
 
 **Alternatives Considered:**
+
 - Database-only: Harder to version control
 - CMS (Strapi, Contentful): External dependency
 - MDX: Adds complexity, not needed initially
@@ -187,12 +219,14 @@ notebooklm_notebook: "openbmc-dbus"
 **Decision:** Use shadcn/ui components with Tailwind CSS for styling.
 
 **Rationale:**
+
 - Copy-paste components (no external dependency)
 - Radix UI primitives for accessibility
 - Tailwind for rapid styling iteration
 - Consistent with modern Next.js patterns
 
 **Alternatives Considered:**
+
 - Material UI: Heavier, opinionated styling
 - Chakra UI: Good but less ecosystem momentum
 - Custom components: Too much effort for MVP
@@ -202,21 +236,26 @@ notebooklm_notebook: "openbmc-dbus"
 ### High Risks
 
 **NotebookLM Availability** → NotebookLM is a Google product that could change or deprecate.
-- *Mitigation:* Abstract behind interface, prepare fallback to direct Claude API queries.
+
+- _Mitigation:_ Abstract behind interface, prepare fallback to direct Claude API queries.
 
 **QEMU Resource Cost** → Each code sandbox session uses significant CPU/memory.
-- *Mitigation:* Container pooling, session timeouts, usage quotas per user.
+
+- _Mitigation:_ Container pooling, session timeouts, usage quotas per user.
 
 ### Medium Risks
 
 **Content Synchronization** → Documentation updates may break lesson structure.
-- *Mitigation:* Semantic versioning for lessons, review process for syncs.
+
+- _Mitigation:_ Semantic versioning for lessons, review process for syncs.
 
 **Self-Hosted Complexity** → QEMU + containers require significant infrastructure.
-- *Mitigation:* Docker Compose for simple deployments, cloud-first development.
+
+- _Mitigation:_ Docker Compose for simple deployments, cloud-first development.
 
 **NotebookLM Rate Limits** → Free tier may have usage constraints.
-- *Mitigation:* Cache responses, batch requests, fallback to static content.
+
+- _Mitigation:_ Cache responses, batch requests, fallback to static content.
 
 ### Trade-offs Accepted
 
@@ -287,11 +326,13 @@ NotebookLM Bridge:
 ## Deployment Architecture
 
 ### Development
+
 ```bash
 docker-compose up  # Next.js + PostgreSQL + Redis
 ```
 
 ### Production (Cloud)
+
 ```
 ┌─────────────────────────────────────────────────┐
 │              Load Balancer (nginx)              │
@@ -308,6 +349,7 @@ docker-compose up  # Next.js + PostgreSQL + Redis
 ```
 
 ### Self-Hosted (Minimal)
+
 - Single Docker Compose stack
 - SQLite instead of PostgreSQL (optional)
 - Limited sandbox capacity (2-3 concurrent)
