@@ -160,7 +160,7 @@
 - [ ] 11.6 Add end-to-end tests with Playwright
 - [ ] 11.7 Create sandbox container tests
 - [x] 11.8 Test NotebookLM integration with mocks
-- [ ] 11.9 Add accessibility tests with axe-core
+- [x] 11.9 Add accessibility tests with axe-core
 
 ## 12. Deployment
 
