@@ -66,9 +66,9 @@
 - [x] 6.1 Create unified lesson player layout component
 - [x] 6.2 Implement markdown content renderer with syntax highlighting
 - [x] 6.3 Add table of contents sidebar with scroll sync
-- [x] 6.4 Create audio player component with speed controls (Browser TTS)
-- [x] 6.5 Implement audio resume from last position
-- [x] 6.6 Add audio transcript display with timestamp links
+- [~] 6.4 Create audio player component with speed controls (Browser TTS) → REMOVE (see 14.21-23)
+- [~] 6.5 Implement audio resume from last position → REMOVE
+- [~] 6.6 Add audio transcript display with timestamp links → REMOVE
 - [x] 6.7 Create quiz interface with question navigation
 - [x] 6.8 Implement quiz scoring and results display
 - [x] 6.9 Add lesson navigation (next/previous buttons)
@@ -97,25 +97,28 @@
 - [ ] 7.14 Create session recovery for connection drops
 - [ ] 7.15 Build container pool for faster startup
 
-## 8. NotebookLM Integration + Browser TTS
+## 8. NotebookLM Integration + Browser TTS (DEPRECATED)
 
-- [x] 8.1 Set up MCP client/service for NotebookLM connection
-- [x] 8.2 Implement connection health check endpoint
-- [x] 8.3 Create content generation service (queries NotebookLM for detailed teaching content)
-- [x] 8.4 Add generated content caching to database
-- [x] 8.5 Implement Q&A query endpoint with context
-- [x] 8.6 Add citation parsing and link generation
-- [x] 8.7 Implement question rate limiting (20/hour)
-- [x] 8.8 Create quiz generation service
-- [x] 8.9 Add quiz caching to database
-- [x] 8.10 Create Browser TTS audio player component (Web Speech API)
-- [x] 8.11 Add TTS controls: play/pause, speed (0.5x-2x), voice selection
-- [x] 8.12 Implement TTS progress indicator and text highlighting
-- [x] 8.13 Add fallback behavior for content (static content)
-- [x] 8.14 Add fallback behavior for Q&A (disabled state)
-- [x] 8.15 Add fallback behavior for TTS (text-only mode)
-- [x] 8.16 Implement usage analytics tracking
-- [x] 8.17 Create degraded mode UI notifications
+> **DEPRECATED**: This section is superseded by Section 14 (Direct GitHub Content Delivery).
+> NotebookLM MCP integration proved ineffective for learning. Tasks below are marked for removal.
+
+- [~] 8.1 Set up MCP client/service for NotebookLM connection → REMOVE
+- [~] 8.2 Implement connection health check endpoint → REMOVE
+- [~] 8.3 Create content generation service → REMOVE
+- [~] 8.4 Add generated content caching to database → REMOVE
+- [~] 8.5 Implement Q&A query endpoint with context → REMOVE
+- [~] 8.6 Add citation parsing and link generation → REMOVE
+- [~] 8.7 Implement question rate limiting (20/hour) → REMOVE
+- [~] 8.8 Create quiz generation service → REMOVE (manual quizzes only)
+- [~] 8.9 Add quiz caching to database → KEEP (for manual quizzes)
+- [~] 8.10 Create Browser TTS audio player component → REMOVE
+- [~] 8.11 Add TTS controls → REMOVE
+- [~] 8.12 Implement TTS progress indicator → REMOVE
+- [~] 8.13 Add fallback behavior for content → REMOVE
+- [~] 8.14 Add fallback behavior for Q&A → REMOVE
+- [~] 8.15 Add fallback behavior for TTS → REMOVE
+- [~] 8.16 Implement usage analytics tracking → REMOVE (AI analytics)
+- [~] 8.17 Create degraded mode UI notifications → REMOVE
 
 ## 9. Content Management
 
@@ -145,7 +148,7 @@
 - [x] 10.3 Create lessons API (detail, content, complete)
 - [x] 10.4 Implement progress API (get, update, export)
 - [ ] 10.5 Create sandbox API (start, stop, terminal WebSocket)
-- [x] 10.6 Implement AI bridge API (audio, ask, quiz)
+- [~] 10.6 Implement AI bridge API (audio, ask, quiz) → REMOVE (see 14.17-20)
 - [x] 10.7 Add API rate limiting middleware
 - [x] 10.8 Implement API error handling and logging
 - [x] 10.9 Create API documentation with OpenAPI spec
@@ -159,7 +162,7 @@
 - [x] 11.5 Create integration tests for API routes
 - [x] 11.6 Add end-to-end tests with Playwright
 - [ ] 11.7 Create sandbox container tests
-- [x] 11.8 Test NotebookLM integration with mocks
+- [~] 11.8 Test NotebookLM integration with mocks → REMOVE (see 14.29)
 - [x] 11.9 Add accessibility tests with axe-core
 
 ## 12. Deployment
@@ -180,7 +183,64 @@
 - [x] 13.1 Create import script for openbmc-guide-tutorial docs
 - [x] 13.2 Map existing doc structure to learning paths
 - [x] 13.3 Extract code examples as sandbox exercises
-- [x] 13.4 Upload documentation to NotebookLM notebooks
-- [x] 13.5 Generate initial quizzes for imported lessons
+- [~] 13.4 Upload documentation to NotebookLM notebooks → DEPRECATED (see 14.11)
+- [~] 13.5 Generate initial quizzes for imported lessons → DEPRECATED (manual quizzes only)
 - [ ] 13.6 Review and curate imported content
 - [x] 13.7 Create initial learning path sequences
+
+## 14. Direct GitHub Content Delivery (NEW)
+
+> Replaces NotebookLM integration with direct content from https://MichaelTien8901.github.io/openbmc-guide-tutorial
+
+### Phase 1: Database & Model Updates
+
+- [ ] 14.1 Add `sourceUrl`, `repositoryPath`, `displayMode` columns to Lesson model
+- [ ] 14.2 Create migration script for schema changes
+- [ ] 14.3 Remove GeneratedContent table (AI content cache)
+- [ ] 14.4 Remove AIResponseCache table (Q&A cache)
+- [ ] 14.5 Remove AIUsageEvent and AIUsageDaily tables
+- [ ] 14.6 Update seed script to use GitHub source URLs
+
+### Phase 2: GitHub Integration
+
+- [ ] 14.7 Create GitHub content fetcher service (`src/lib/github/content-fetcher.ts`)
+- [ ] 14.8 Implement repository structure parser for lesson discovery
+- [ ] 14.9 Create admin "Sync from GitHub" endpoint (`POST /api/admin/sync-github`)
+- [ ] 14.10 Add raw markdown proxy endpoint (`GET /api/content/raw/:path`)
+- [ ] 14.11 Map existing lessons to openbmc-guide-tutorial URLs
+
+### Phase 3: Content Display Components
+
+- [ ] 14.12 Create `GitHubContentFrame` component (iframe mode)
+- [ ] 14.13 Create `GitHubContentRenderer` component (fetch + render mode)
+- [ ] 14.14 Update lesson player to support both display modes
+- [ ] 14.15 Add "View Original" link to GitHub Pages source
+- [ ] 14.16 Implement scroll position tracking for progress (render mode)
+
+### Phase 4: Remove NotebookLM Code
+
+- [ ] 14.17 Remove `src/lib/notebooklm/` directory (client, service, types)
+- [ ] 14.18 Remove `/api/ai/audio/` endpoint
+- [ ] 14.19 Remove `/api/ai/ask/` endpoint
+- [ ] 14.20 Remove `/api/ai/quiz/` generation endpoint (keep manual quiz endpoints)
+- [ ] 14.21 Remove AI audio player component
+- [ ] 14.22 Remove AI Q&A panel component
+- [ ] 14.23 Remove TTS-related components and hooks
+
+### Phase 5: Admin Updates
+
+- [ ] 14.24 Update lesson editor to use sourceUrl instead of notebookId
+- [ ] 14.25 Add displayMode selector (iframe/render) to lesson editor
+- [ ] 14.26 Create GitHub sync panel in admin dashboard
+- [ ] 14.27 Update content analytics to remove AI metrics
+- [ ] 14.28 Update import script to set GitHub source URLs
+
+### Phase 6: Testing & Cleanup
+
+- [ ] 14.29 Update/remove NotebookLM integration tests
+- [ ] 14.30 Add tests for GitHub content fetching
+- [ ] 14.31 Add tests for iframe and render display modes
+- [ ] 14.32 Update E2E tests for new lesson player flow
+- [ ] 14.33 Remove NotebookLM documentation (`docs/NOTEBOOKLM.md`)
+- [ ] 14.34 Update CLAUDE.md to reflect architecture change
+- [ ] 14.35 Create documentation for GitHub content integration
