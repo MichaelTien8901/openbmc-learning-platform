@@ -164,16 +164,16 @@
 
 ## 12. Deployment
 
-- [ ] 12.1 Create production Dockerfile
-- [ ] 12.2 Set up Docker Compose for self-hosted deployment
-- [ ] 12.3 Configure environment variables for production
-- [ ] 12.4 Create database migration scripts
-- [ ] 12.5 Set up CI/CD pipeline (GitHub Actions)
-- [ ] 12.6 Configure load balancer (nginx)
+- [x] 12.1 Create production Dockerfile
+- [x] 12.2 Set up Docker Compose for self-hosted deployment
+- [x] 12.3 Configure environment variables for production
+- [x] 12.4 Create database migration scripts
+- [x] 12.5 Set up CI/CD pipeline (GitHub Actions)
+- [x] 12.6 Configure load balancer (nginx)
 - [ ] 12.7 Set up container registry for QEMU images
-- [ ] 12.8 Create deployment documentation
+- [x] 12.8 Create deployment documentation
 - [x] 12.9 Add health check endpoints
-- [ ] 12.10 Configure monitoring and logging
+- [x] 12.10 Configure monitoring and logging
 
 ## 13. Content Import
 
