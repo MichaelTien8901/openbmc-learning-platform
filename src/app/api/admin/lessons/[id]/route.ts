@@ -66,6 +66,40 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       }
     }
 
+    // Create version before updating (if content changed)
+    const contentChanged =
+      (content && content !== existing.content) ||
+      (title && title !== existing.title) ||
+      (description !== undefined && description !== existing.description);
+
+    if (contentChanged) {
+      // Get latest version number
+      const latestVersion = await prisma.contentVersion.findFirst({
+        where: { entityType: "lesson", entityId: id },
+        orderBy: { version: "desc" },
+      });
+
+      const nextVersion = (latestVersion?.version || 0) + 1;
+
+      // Save current state as new version
+      await prisma.contentVersion.create({
+        data: {
+          entityType: "lesson",
+          entityId: id,
+          version: nextVersion,
+          content: {
+            title: existing.title,
+            slug: existing.slug,
+            description: existing.description,
+            content: existing.content,
+            difficulty: existing.difficulty,
+            estimatedMinutes: existing.estimatedMinutes,
+          },
+          changedBy: session.id,
+        },
+      });
+    }
+
     const lesson = await prisma.lesson.update({
       where: { id },
       data: {
