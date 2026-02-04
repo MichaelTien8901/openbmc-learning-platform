@@ -19,6 +19,12 @@ interface PathData {
   order: number;
 }
 
+interface PrerequisitePath {
+  id: string;
+  slug: string;
+  title: string;
+}
+
 interface LessonData {
   id: string;
   title: string;
@@ -48,7 +54,9 @@ export default function AdminPathEditPage({ params }: { params: Promise<{ id: st
   });
 
   const [pathLessons, setPathLessons] = useState<PathLesson[]>([]);
+  const [prerequisites, setPrerequisites] = useState<PrerequisitePath[]>([]);
   const [allLessons, setAllLessons] = useState<LessonData[]>([]);
+  const [allPaths, setAllPaths] = useState<PrerequisitePath[]>([]);
   const [isLoading, setIsLoading] = useState(!isNew);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +69,7 @@ export default function AdminPathEditPage({ params }: { params: Promise<{ id: st
       if (data.success) {
         setPath(data.data.path);
         setPathLessons(data.data.lessons);
+        setPrerequisites(data.data.prerequisites || []);
       } else {
         setError(data.error || "Failed to load path");
       }
@@ -84,12 +93,32 @@ export default function AdminPathEditPage({ params }: { params: Promise<{ id: st
     }
   }, []);
 
+  const loadAllPaths = useCallback(async () => {
+    try {
+      const response = await fetch("/api/admin/paths");
+      const data = await response.json();
+
+      if (data.success) {
+        setAllPaths(
+          data.data.map((p: PathData) => ({
+            id: p.id,
+            slug: p.slug,
+            title: p.title,
+          }))
+        );
+      }
+    } catch {
+      console.error("Failed to load paths");
+    }
+  }, []);
+
   useEffect(() => {
     loadAllLessons();
+    loadAllPaths();
     if (!isNew) {
       loadPath();
     }
-  }, [isNew, loadPath, loadAllLessons]);
+  }, [isNew, loadPath, loadAllLessons, loadAllPaths]);
 
   async function handleSave() {
     setIsSaving(true);
@@ -108,6 +137,7 @@ export default function AdminPathEditPage({ params }: { params: Promise<{ id: st
             lessonId: pl.lessonId,
             order: index,
           })),
+          prerequisites: prerequisites.map((p) => p.id),
         }),
       });
 
@@ -119,6 +149,7 @@ export default function AdminPathEditPage({ params }: { params: Promise<{ id: st
         } else {
           setPath(data.data.path);
           setPathLessons(data.data.lessons);
+          setPrerequisites(data.data.prerequisites || []);
         }
       } else {
         setError(data.error || "Failed to save path");
@@ -191,6 +222,26 @@ export default function AdminPathEditPage({ params }: { params: Promise<{ id: st
 
     [newLessons[index], newLessons[targetIndex]] = [newLessons[targetIndex], newLessons[index]];
     setPathLessons(newLessons);
+  }
+
+  function addPrerequisite(pathId: string) {
+    const pathToAdd = allPaths.find((p) => p.id === pathId);
+    if (!pathToAdd) return;
+
+    if (prerequisites.some((p) => p.id === pathId)) {
+      return; // Already added
+    }
+
+    // Don't allow adding self as prerequisite
+    if (pathId === path.id) {
+      return;
+    }
+
+    setPrerequisites([...prerequisites, pathToAdd]);
+  }
+
+  function removePrerequisite(pathId: string) {
+    setPrerequisites(prerequisites.filter((p) => p.id !== pathId));
   }
 
   if (isLoading) {
@@ -325,6 +376,82 @@ export default function AdminPathEditPage({ params }: { params: Promise<{ id: st
                 />
                 <Label htmlFor="published">Published</Label>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Prerequisites */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Prerequisites ({prerequisites.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4 text-sm text-gray-500">
+                Users must complete these paths before enrolling in this one.
+              </p>
+
+              {prerequisites.length === 0 ? (
+                <p className="py-2 text-center text-sm text-gray-500">
+                  No prerequisites. Anyone can start this path.
+                </p>
+              ) : (
+                <div className="mb-4 space-y-2">
+                  {prerequisites.map((prereq) => (
+                    <div
+                      key={prereq.id}
+                      className="flex items-center justify-between rounded border border-gray-200 p-3 dark:border-gray-800"
+                    >
+                      <div>
+                        <p className="font-medium">{prereq.title}</p>
+                        <p className="text-xs text-gray-500">{prereq.slug}</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removePrerequisite(prereq.id)}
+                        className="text-red-600"
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Add prerequisite selector */}
+              {!isNew && (
+                <div>
+                  <Label htmlFor="add-prerequisite">Add Prerequisite</Label>
+                  <select
+                    id="add-prerequisite"
+                    className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        addPrerequisite(e.target.value);
+                        e.target.value = "";
+                      }
+                    }}
+                    defaultValue=""
+                  >
+                    <option value="">Select a path...</option>
+                    {allPaths
+                      .filter(
+                        (p) =>
+                          p.id !== path.id && !prerequisites.some((prereq) => prereq.id === p.id)
+                      )
+                      .map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.title}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
+
+              {isNew && (
+                <p className="text-sm text-yellow-600 dark:text-yellow-400">
+                  Save the path first to add prerequisites.
+                </p>
+              )}
             </CardContent>
           </Card>
 

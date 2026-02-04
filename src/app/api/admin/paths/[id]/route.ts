@@ -23,6 +23,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           },
           orderBy: { order: "asc" },
         },
+        prerequisites: {
+          include: {
+            prerequisite: {
+              select: { id: true, slug: true, title: true },
+            },
+          },
+        },
       },
     });
 
@@ -48,6 +55,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           order: pl.order,
           lesson: pl.lesson,
         })),
+        prerequisites: path.prerequisites.map((p) => ({
+          id: p.prerequisite.id,
+          slug: p.prerequisite.slug,
+          title: p.prerequisite.title,
+        })),
       },
     });
   } catch (error) {
@@ -71,8 +83,17 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const { id } = await params;
     const body = await request.json();
-    const { title, slug, description, difficulty, estimatedHours, published, order, lessons } =
-      body;
+    const {
+      title,
+      slug,
+      description,
+      difficulty,
+      estimatedHours,
+      published,
+      order,
+      lessons,
+      prerequisites,
+    } = body;
 
     // Check if path exists
     const existing = await prisma.learningPath.findUnique({ where: { id } });
@@ -126,7 +147,25 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         }
       }
 
-      // Return path with lessons
+      // Update prerequisites if provided
+      if (prerequisites !== undefined) {
+        // Delete existing prerequisites
+        await tx.pathPrerequisite.deleteMany({
+          where: { pathId: id },
+        });
+
+        // Create new prerequisites
+        if (Array.isArray(prerequisites) && prerequisites.length > 0) {
+          await tx.pathPrerequisite.createMany({
+            data: (prerequisites as string[]).map((prerequisiteId: string) => ({
+              pathId: id,
+              prerequisiteId,
+            })),
+          });
+        }
+      }
+
+      // Return path with lessons and prerequisites
       return tx.learningPath.findUnique({
         where: { id },
         include: {
@@ -137,6 +176,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
               },
             },
             orderBy: { order: "asc" },
+          },
+          prerequisites: {
+            include: {
+              prerequisite: {
+                select: { id: true, slug: true, title: true },
+              },
+            },
           },
         },
       });
@@ -159,6 +205,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           lessonId: pl.lessonId,
           order: pl.order,
           lesson: pl.lesson,
+        })),
+        prerequisites: updatedPath!.prerequisites.map((p) => ({
+          id: p.prerequisite.id,
+          slug: p.prerequisite.slug,
+          title: p.prerequisite.title,
         })),
       },
     });
