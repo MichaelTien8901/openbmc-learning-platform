@@ -100,6 +100,19 @@ export function GitHubContentRenderer({
       // Remove frontmatter
       let processed = rawContent.replace(/^---\n[\s\S]*?\n---\n/, "");
 
+      // Remove Jekyll/kramdown metadata tags like {: .class1 .class2 }
+      processed = processed.replace(/\{:\s*[^}]+\}/g, "");
+
+      // Remove Jekyll TOC markers
+      processed = processed.replace(/^\s*TOC\s*$/gm, "");
+      processed = processed.replace(/\{:toc\}/g, "");
+
+      // Remove "Table of Contents" sections that are just Jekyll markers
+      processed = processed.replace(/^#+\s*Table of Contents#?\s*$/gm, "");
+
+      // Clean up multiple blank lines
+      processed = processed.replace(/\n{3,}/g, "\n\n");
+
       // Rewrite relative image paths
       // Match: ![alt](./path) or ![alt](path) or ![alt](../path)
       processed = processed.replace(
