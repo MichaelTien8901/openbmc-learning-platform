@@ -12,6 +12,9 @@ import {
   Clock,
   Loader2,
   ExternalLink,
+  AlertTriangle,
+  AlertCircle,
+  ChevronRight,
 } from "lucide-react";
 
 interface ContentAnalytics {
@@ -59,23 +62,46 @@ interface AIAnalytics {
   topQuestions: Array<{ question: string; count: number }>;
 }
 
+interface AlertsSummary {
+  alerts: Array<{
+    id: string;
+    type: string;
+    severity: "warning" | "critical";
+    title: string;
+    contentTitle: string;
+    contentType: "lesson" | "path";
+    contentId: string;
+  }>;
+  summary: {
+    critical: number;
+    warning: number;
+  };
+}
+
 export default function AnalyticsPage() {
   const [contentData, setContentData] = useState<ContentAnalytics | null>(null);
   const [aiData, setAIData] = useState<AIAnalytics | null>(null);
+  const [alertsData, setAlertsData] = useState<AlertsSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [contentRes, aiRes] = await Promise.all([
+        const [contentRes, aiRes, alertsRes] = await Promise.all([
           fetch("/api/admin/analytics/content"),
           fetch("/api/admin/analytics/ai?days=30"),
+          fetch("/api/admin/analytics/alerts"),
         ]);
 
-        const [contentJson, aiJson] = await Promise.all([contentRes.json(), aiRes.json()]);
+        const [contentJson, aiJson, alertsJson] = await Promise.all([
+          contentRes.json(),
+          aiRes.json(),
+          alertsRes.json(),
+        ]);
 
         if (contentJson.success) setContentData(contentJson.data);
         if (aiJson.success) setAIData(aiJson.data);
+        if (alertsJson.success) setAlertsData(alertsJson.data);
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
       } finally {
@@ -102,6 +128,68 @@ export default function AnalyticsPage() {
           Content performance and platform usage metrics
         </p>
       </div>
+
+      {/* Alerts Banner */}
+      {alertsData && (alertsData.summary.critical > 0 || alertsData.summary.warning > 0) && (
+        <div
+          className={`rounded-lg border p-4 ${
+            alertsData.summary.critical > 0
+              ? "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
+              : "border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {alertsData.summary.critical > 0 ? (
+                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              ) : (
+                <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+              )}
+              <div>
+                <h3
+                  className={`font-medium ${
+                    alertsData.summary.critical > 0
+                      ? "text-red-900 dark:text-red-300"
+                      : "text-yellow-900 dark:text-yellow-300"
+                  }`}
+                >
+                  Content Alerts
+                </h3>
+                <p
+                  className={`text-sm ${
+                    alertsData.summary.critical > 0
+                      ? "text-red-700 dark:text-red-400"
+                      : "text-yellow-700 dark:text-yellow-400"
+                  }`}
+                >
+                  {alertsData.summary.critical > 0 && (
+                    <span>{alertsData.summary.critical} critical</span>
+                  )}
+                  {alertsData.summary.critical > 0 && alertsData.summary.warning > 0 && ", "}
+                  {alertsData.summary.warning > 0 && (
+                    <span>
+                      {alertsData.summary.warning} warning
+                      {alertsData.summary.warning !== 1 ? "s" : ""}
+                    </span>
+                  )}{" "}
+                  requiring attention
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/admin/alerts"
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium ${
+                alertsData.summary.critical > 0
+                  ? "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-800/30 dark:text-red-300 dark:hover:bg-red-800/50"
+                  : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-800/30 dark:text-yellow-300 dark:hover:bg-yellow-800/50"
+              }`}
+            >
+              View Alerts
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Overview Stats */}
       {contentData && (

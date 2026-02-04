@@ -69,6 +69,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                     >
                       Analytics
                     </Link>
+                    <Link
+                      href="/admin/alerts"
+                      className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                    >
+                      Alerts
+                    </Link>
                   </>
                 )}
               </div>
