@@ -1,0 +1,1304 @@
+openapi: 3.0.3
+info:
+  title: OpenBMC Learning Platform API
+  description: |
+    REST API for the OpenBMC Learning Platform. Provides endpoints for authentication,
+    learning paths, lessons, progress tracking, AI features, and admin operations.
+  version: 1.0.0
+  contact:
+    name: OpenBMC Learning Platform
+  license:
+    name: MIT
+
+servers:
+  - url: /api
+    description: API base path
+
+tags:
+  - name: Auth
+    description: Authentication and user management
+  - name: Learning Paths
+    description: Learning path management and enrollment
+  - name: Lessons
+    description: Lesson content and completion
+  - name: Progress
+    description: User progress tracking and export
+  - name: AI
+    description: AI-powered features (Q&A, quiz generation)
+  - name: Admin
+    description: Administrative operations (requires ADMIN role)
+
+paths:
+  # ============= Authentication =============
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register new user
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, displayName]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                displayName:
+                  type: string
+                  minLength: 2
+                  maxLength: 50
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Email already exists
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with email and password
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout current user
+      operationId: logout
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logged out successfully
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user
+      operationId: getMe
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/profile:
+    patch:
+      tags: [Auth]
+      summary: Update user profile
+      operationId: updateProfile
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  minLength: 2
+                  maxLength: 50
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/password:
+    post:
+      tags: [Auth]
+      summary: Change password
+      operationId: changePassword
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword]
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Password changed
+        '400':
+          description: Invalid current password
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Request password reset email
+      operationId: forgotPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Reset email sent (if account exists)
+
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Reset password with token
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password]
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Password reset successful
+        '400':
+          description: Invalid or expired token
+
+  /auth/delete-account:
+    delete:
+      tags: [Auth]
+      summary: Delete user account
+      operationId: deleteAccount
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Account deleted
+        '400':
+          description: Invalid password
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============= Learning Paths =============
+  /paths:
+    get:
+      tags: [Learning Paths]
+      summary: List all learning paths
+      operationId: listPaths
+      parameters:
+        - name: difficulty
+          in: query
+          schema:
+            type: string
+            enum: [BEGINNER, INTERMEDIATE, ADVANCED]
+        - name: published
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: List of learning paths
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PathListResponse'
+
+  /paths/{slug}:
+    get:
+      tags: [Learning Paths]
+      summary: Get learning path details
+      operationId: getPath
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Learning path details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PathDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /paths/{slug}/enroll:
+    post:
+      tags: [Learning Paths]
+      summary: Enroll in learning path
+      operationId: enrollPath
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Enrolled successfully
+        '400':
+          description: Prerequisites not met
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ============= Lessons =============
+  /lessons:
+    get:
+      tags: [Lessons]
+      summary: List lessons
+      operationId: listLessons
+      parameters:
+        - name: pathId
+          in: query
+          schema:
+            type: string
+        - name: published
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: List of lessons
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonListResponse'
+
+  /lessons/{slug}:
+    get:
+      tags: [Lessons]
+      summary: Get lesson content
+      operationId: getLesson
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lesson content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /lessons/{lessonId}/complete:
+    post:
+      tags: [Lessons]
+      summary: Mark lesson as complete
+      operationId: completeLesson
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lesson marked complete
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /lessons/{lessonId}/bookmark:
+    post:
+      tags: [Lessons]
+      summary: Toggle lesson bookmark
+      operationId: toggleBookmark
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bookmark toggled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      bookmarked:
+                        type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /lessons/{lessonId}/notes:
+    get:
+      tags: [Lessons]
+      summary: Get user notes for lesson
+      operationId: getNotes
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User notes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotesResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Lessons]
+      summary: Save user notes for lesson
+      operationId: saveNotes
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Notes saved
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============= Progress =============
+  /progress:
+    get:
+      tags: [Progress]
+      summary: Get user progress overview
+      operationId: getProgress
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User progress data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /progress/path/{pathId}:
+    get:
+      tags: [Progress]
+      summary: Get progress for specific path
+      operationId: getPathProgress
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: pathId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Path progress data
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /progress/export:
+    get:
+      tags: [Progress]
+      summary: Export progress data
+      operationId: exportProgress
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [json, markdown]
+            default: json
+      responses:
+        '200':
+          description: Exported progress
+          content:
+            application/json:
+              schema:
+                type: object
+            text/markdown:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /progress/streak:
+    get:
+      tags: [Progress]
+      summary: Get learning streak info
+      operationId: getStreak
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Streak information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      currentStreak:
+                        type: integer
+                      longestStreak:
+                        type: integer
+                      lastActivityDate:
+                        type: string
+                        format: date
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /progress/quiz:
+    post:
+      tags: [Progress]
+      summary: Submit quiz attempt
+      operationId: submitQuiz
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [lessonId, answers]
+              properties:
+                lessonId:
+                  type: string
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      questionId:
+                        type: string
+                      selectedAnswer:
+                        type: integer
+      responses:
+        '200':
+          description: Quiz submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      score:
+                        type: integer
+                      passed:
+                        type: boolean
+                      correctAnswers:
+                        type: integer
+                      totalQuestions:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============= AI Features =============
+  /ai/status:
+    get:
+      tags: [AI]
+      summary: Get AI service status
+      operationId: getAiStatus
+      responses:
+        '200':
+          description: AI service status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      available:
+                        type: boolean
+                      mode:
+                        type: string
+                        enum: [mcp, browser, fallback]
+
+  /ai/ask:
+    post:
+      tags: [AI]
+      summary: Ask AI a question
+      operationId: askAi
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question]
+              properties:
+                question:
+                  type: string
+                  maxLength: 1000
+                lessonId:
+                  type: string
+                  description: Context lesson for the question
+      responses:
+        '200':
+          description: AI answer
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      answer:
+                        type: string
+                      citations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            title:
+                              type: string
+                            url:
+                              type: string
+                      cached:
+                        type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          description: Rate limit exceeded (20 questions/hour)
+
+  /ai/quiz/{lessonId}:
+    get:
+      tags: [AI]
+      summary: Generate quiz for lesson
+      operationId: generateQuiz
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: regenerate
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Generated quiz
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      questions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/QuizQuestion'
+                      cached:
+                        type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ============= Admin =============
+  /admin/users:
+    get:
+      tags: [Admin]
+      summary: List all users
+      operationId: listUsers
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [LEARNER, EDITOR, ADMIN]
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AdminUser'
+                      total:
+                        type: integer
+                      page:
+                        type: integer
+                      pageSize:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Admin role required
+
+  /admin/users/{userId}:
+    get:
+      tags: [Admin]
+      summary: Get user details
+      operationId: getUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Admin]
+      summary: Update user (role)
+      operationId: updateUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: [LEARNER, EDITOR, ADMIN]
+      responses:
+        '200':
+          description: User updated
+        '400':
+          description: Cannot demote self
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [Admin]
+      summary: Delete user
+      operationId: deleteUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+        '400':
+          description: Cannot delete self or admin
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /admin/analytics/content:
+    get:
+      tags: [Admin]
+      summary: Get content analytics
+      operationId: getContentAnalytics
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Content analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentAnalyticsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /admin/analytics/ai:
+    get:
+      tags: [Admin]
+      summary: Get AI usage analytics
+      operationId: getAiAnalytics
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        '200':
+          description: AI analytics
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /admin/analytics/alerts:
+    get:
+      tags: [Admin]
+      summary: Get content performance alerts
+      operationId: getContentAlerts
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Content alerts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      alerts:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ContentAlert'
+                      summary:
+                        type: object
+                        properties:
+                          critical:
+                            type: integer
+                          warning:
+                            type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: auth_token
+      description: JWT authentication token stored in HTTP-only cookie
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+
+    UserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        displayName:
+          type: string
+        role:
+          type: string
+          enum: [LEARNER, EDITOR, ADMIN]
+        emailVerified:
+          type: string
+          format: date-time
+          nullable: true
+
+    AdminUser:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        role:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        emailVerified:
+          type: string
+          format: date-time
+          nullable: true
+
+    PathListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            paths:
+              type: array
+              items:
+                $ref: '#/components/schemas/LearningPathSummary'
+
+    LearningPathSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: string
+          enum: [BEGINNER, INTERMEDIATE, ADVANCED]
+        estimatedHours:
+          type: integer
+        lessonCount:
+          type: integer
+
+    PathDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/LearningPath'
+
+    LearningPath:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: string
+        estimatedHours:
+          type: integer
+        published:
+          type: boolean
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonSummary'
+        prerequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningPathSummary'
+
+    LessonListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            lessons:
+              type: array
+              items:
+                $ref: '#/components/schemas/LessonSummary'
+
+    LessonSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        order:
+          type: integer
+        estimatedMinutes:
+          type: integer
+
+    LessonDetailResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Lesson'
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        content:
+          type: string
+          description: Markdown content
+        order:
+          type: integer
+        estimatedMinutes:
+          type: integer
+        published:
+          type: boolean
+        learningPathId:
+          type: string
+        nextLesson:
+          $ref: '#/components/schemas/LessonSummary'
+        previousLesson:
+          $ref: '#/components/schemas/LessonSummary'
+
+    NotesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            notes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  content:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+
+    ProgressResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            totalLessonsCompleted:
+              type: integer
+            totalPaths:
+              type: integer
+            completedPaths:
+              type: integer
+            currentStreak:
+              type: integer
+            weeklyActivity:
+              type: array
+              items:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    format: date
+                  count:
+                    type: integer
+
+    QuizQuestion:
+      type: object
+      properties:
+        id:
+          type: string
+        question:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        correctAnswer:
+          type: integer
+          description: Index of correct option (only in admin responses)
+        explanation:
+          type: string
+
+    ContentAlert:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [low_completion, low_quiz_score, high_dropout, stale_content, no_engagement]
+        severity:
+          type: string
+          enum: [warning, critical]
+        title:
+          type: string
+        description:
+          type: string
+        contentType:
+          type: string
+          enum: [lesson, path]
+        contentId:
+          type: string
+        contentTitle:
+          type: string
+        metric:
+          type: number
+        threshold:
+          type: number
+
+    ContentAnalyticsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            overview:
+              type: object
+              properties:
+                totalLessons:
+                  type: integer
+                publishedLessons:
+                  type: integer
+                totalPaths:
+                  type: integer
+                publishedPaths:
+                  type: integer
+                totalUsers:
+                  type: integer
+                activeUsers:
+                  type: integer
+            lessonStats:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  completions:
+                    type: integer
+                  avgQuizScore:
+                    type: number
+                    nullable: true
+            pathStats:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  enrollments:
+                    type: integer
+                  completionRate:
+                    type: number

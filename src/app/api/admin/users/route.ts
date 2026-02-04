@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import type { ApiResponse } from "@/types";
+import type { UserRole, Prisma } from "@/generated/prisma";
 
 interface UserListItem {
   id: string;
@@ -37,13 +38,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<ApiRespons
     const role = url.searchParams.get("role") || "";
 
     // Build where clause
-    const where: {
-      OR?: Array<{
-        email?: { contains: string; mode: "insensitive" };
-        displayName?: { contains: string; mode: "insensitive" };
-      }>;
-      role?: string;
-    } = {};
+    const where: Prisma.UserWhereInput = {};
 
     if (search) {
       where.OR = [
@@ -53,7 +48,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<ApiRespons
     }
 
     if (role && ["LEARNER", "EDITOR", "ADMIN"].includes(role)) {
-      where.role = role;
+      where.role = role as UserRole;
     }
 
     // Get total count

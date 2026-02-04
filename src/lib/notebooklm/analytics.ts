@@ -5,6 +5,11 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import type {
+  Prisma,
+  AIEventType as PrismaAIEventType,
+  AIFeature as PrismaAIFeature,
+} from "@/generated/prisma";
 
 // Event types matching Prisma enum
 export type AIEventType =
@@ -73,7 +78,7 @@ export async function trackAIEvent(options: TrackEventOptions): Promise<void> {
         errorCode: options.errorCode,
         latencyMs: options.latencyMs,
         cached: options.cached ?? false,
-        metadata: options.metadata,
+        metadata: options.metadata as Prisma.InputJsonValue | undefined,
       },
     });
 
@@ -250,9 +255,9 @@ export async function getTopQuestions(
   limit: number = 10,
   startDate?: Date
 ): Promise<Array<{ question: string; count: number }>> {
-  const where: { createdAt?: { gte: Date }; eventType: string; feature: string } = {
-    eventType: "QUERY",
-    feature: "QA",
+  const where: Prisma.AIUsageEventWhereInput = {
+    eventType: "QUERY" as PrismaAIEventType,
+    feature: "QA" as PrismaAIFeature,
   };
 
   if (startDate) {
