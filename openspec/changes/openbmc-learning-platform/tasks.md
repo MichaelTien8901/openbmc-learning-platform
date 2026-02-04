@@ -68,7 +68,7 @@
 - [x] 6.3 Add table of contents sidebar with scroll sync
 - [x] 6.4 Create audio player component with speed controls (Browser TTS)
 - [x] 6.5 Implement audio resume from last position
-- [ ] 6.6 Add audio transcript display with timestamp links
+- [x] 6.6 Add audio transcript display with timestamp links
 - [x] 6.7 Create quiz interface with question navigation
 - [x] 6.8 Implement quiz scoring and results display
 - [x] 6.9 Add lesson navigation (next/previous buttons)
