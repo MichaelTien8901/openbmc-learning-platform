@@ -106,6 +106,51 @@ async function main() {
     },
   });
 
+  const interfacesPath = await prisma.learningPath.upsert({
+    where: { slug: "interfaces" },
+    update: {},
+    create: {
+      slug: "interfaces",
+      title: "Management Interfaces",
+      description:
+        "Learn about OpenBMC management interfaces including IPMI, Redfish, WebUI, KVM, and more.",
+      difficulty: "INTERMEDIATE",
+      estimatedHours: 10,
+      published: true,
+      order: 5,
+    },
+  });
+
+  const advancedPath = await prisma.learningPath.upsert({
+    where: { slug: "advanced-topics" },
+    update: {},
+    create: {
+      slug: "advanced-topics",
+      title: "Advanced Topics",
+      description:
+        "Deep dive into advanced OpenBMC topics including MCTP/PLDM, firmware updates, debugging, and testing.",
+      difficulty: "ADVANCED",
+      estimatedHours: 15,
+      published: true,
+      order: 6,
+    },
+  });
+
+  const portingPath = await prisma.learningPath.upsert({
+    where: { slug: "platform-porting" },
+    update: {},
+    create: {
+      slug: "platform-porting",
+      title: "Platform Porting",
+      description:
+        "Learn how to port OpenBMC to new hardware platforms including device tree, U-Boot, and verification.",
+      difficulty: "ADVANCED",
+      estimatedHours: 12,
+      published: true,
+      order: 7,
+    },
+  });
+
   // Create prerequisites
   await prisma.pathPrerequisite.upsert({
     where: {
@@ -834,6 +879,818 @@ Common classes: \`meson\`, \`cmake\`, \`systemd\`, \`obmc-phosphor-systemd\`
   });
 
   console.log("Created Yocto Recipes lessons");
+
+  // ============================================================================
+  // Additional Core Services Lessons (for Sensor Management path)
+  // ============================================================================
+  const coreLesson1 = await prisma.lesson.upsert({
+    where: { slug: "user-manager" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/06-user-manager-guide`,
+      repositoryPath: "docs/03-core-services/06-user-manager-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "user-manager",
+      title: "User Manager Guide",
+      description: "Managing users and authentication in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/06-user-manager-guide`,
+      repositoryPath: "docs/03-core-services/06-user-manager-guide.md",
+      displayMode: "RENDER",
+      content: "# User Manager Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+  const coreLesson2 = await prisma.lesson.upsert({
+    where: { slug: "network-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/07-network-guide`,
+      repositoryPath: "docs/03-core-services/07-network-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "network-guide",
+      title: "Network Configuration Guide",
+      description: "Configure networking in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/07-network-guide`,
+      repositoryPath: "docs/03-core-services/07-network-guide.md",
+      displayMode: "RENDER",
+      content: "# Network Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+  const coreLesson3 = await prisma.lesson.upsert({
+    where: { slug: "led-manager" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/08-led-manager-guide`,
+      repositoryPath: "docs/03-core-services/08-led-manager-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "led-manager",
+      title: "LED Manager Guide",
+      description: "Control system LEDs in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/08-led-manager-guide`,
+      repositoryPath: "docs/03-core-services/08-led-manager-guide.md",
+      displayMode: "RENDER",
+      content: "# LED Manager Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 20,
+      published: true,
+    },
+  });
+  const coreLesson4 = await prisma.lesson.upsert({
+    where: { slug: "certificate-manager" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/09-certificate-manager-guide`,
+      repositoryPath: "docs/03-core-services/09-certificate-manager-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "certificate-manager",
+      title: "Certificate Manager Guide",
+      description: "Manage SSL/TLS certificates in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/09-certificate-manager-guide`,
+      repositoryPath: "docs/03-core-services/09-certificate-manager-guide.md",
+      displayMode: "RENDER",
+      content: "# Certificate Manager Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+  const coreLesson5 = await prisma.lesson.upsert({
+    where: { slug: "time-manager" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/10-time-manager-guide`,
+      repositoryPath: "docs/03-core-services/10-time-manager-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "time-manager",
+      title: "Time Manager Guide",
+      description: "Time synchronization in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/10-time-manager-guide`,
+      repositoryPath: "docs/03-core-services/10-time-manager-guide.md",
+      displayMode: "RENDER",
+      content: "# Time Manager Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 15,
+      published: true,
+    },
+  });
+  const coreLesson6 = await prisma.lesson.upsert({
+    where: { slug: "watchdog-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/12-watchdog-guide`,
+      repositoryPath: "docs/03-core-services/12-watchdog-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "watchdog-guide",
+      title: "Watchdog Guide",
+      description: "Hardware watchdog management in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/12-watchdog-guide`,
+      repositoryPath: "docs/03-core-services/12-watchdog-guide.md",
+      displayMode: "RENDER",
+      content: "# Watchdog Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 20,
+      published: true,
+    },
+  });
+  const coreLesson7 = await prisma.lesson.upsert({
+    where: { slug: "buttons-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/13-buttons-guide`,
+      repositoryPath: "docs/03-core-services/13-buttons-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "buttons-guide",
+      title: "Buttons Guide",
+      description: "Handle physical buttons in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/13-buttons-guide`,
+      repositoryPath: "docs/03-core-services/13-buttons-guide.md",
+      displayMode: "RENDER",
+      content: "# Buttons Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 15,
+      published: true,
+    },
+  });
+
+  // Link additional core lessons to Sensor Management path
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: coreLesson1.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: coreLesson1.id, order: 7 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: coreLesson2.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: coreLesson2.id, order: 8 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: coreLesson3.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: coreLesson3.id, order: 9 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: coreLesson4.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: coreLesson4.id, order: 10 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: coreLesson5.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: coreLesson5.id, order: 11 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: coreLesson6.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: coreLesson6.id, order: 12 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: sensorsPath.id, lessonId: coreLesson7.id } },
+    update: {},
+    create: { pathId: sensorsPath.id, lessonId: coreLesson7.id, order: 13 },
+  });
+
+  console.log("Created additional Core Services lessons (7 lessons)");
+
+  // ============================================================================
+  // Interfaces Lessons
+  // ============================================================================
+  const ifLesson1 = await prisma.lesson.upsert({
+    where: { slug: "ipmi-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/01-ipmi-guide`,
+      repositoryPath: "docs/04-interfaces/01-ipmi-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "ipmi-guide",
+      title: "IPMI Guide",
+      description: "Intelligent Platform Management Interface in OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/01-ipmi-guide`,
+      repositoryPath: "docs/04-interfaces/01-ipmi-guide.md",
+      displayMode: "RENDER",
+      content: "# IPMI Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 35,
+      published: true,
+    },
+  });
+  const ifLesson2 = await prisma.lesson.upsert({
+    where: { slug: "redfish-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/02-redfish-guide`,
+      repositoryPath: "docs/04-interfaces/02-redfish-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "redfish-guide",
+      title: "Redfish API Guide",
+      description: "RESTful API for server management",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/02-redfish-guide`,
+      repositoryPath: "docs/04-interfaces/02-redfish-guide.md",
+      displayMode: "RENDER",
+      content: "# Redfish Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 40,
+      published: true,
+    },
+  });
+  const ifLesson3 = await prisma.lesson.upsert({
+    where: { slug: "webui-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/03-webui-guide`,
+      repositoryPath: "docs/04-interfaces/03-webui-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "webui-guide",
+      title: "Web UI Guide",
+      description: "OpenBMC web interface",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/03-webui-guide`,
+      repositoryPath: "docs/04-interfaces/03-webui-guide.md",
+      displayMode: "RENDER",
+      content: "# Web UI Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+  const ifLesson4 = await prisma.lesson.upsert({
+    where: { slug: "kvm-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/04-kvm-guide`,
+      repositoryPath: "docs/04-interfaces/04-kvm-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "kvm-guide",
+      title: "KVM Guide",
+      description: "Keyboard, Video, Mouse over IP",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/04-kvm-guide`,
+      repositoryPath: "docs/04-interfaces/04-kvm-guide.md",
+      displayMode: "RENDER",
+      content: "# KVM Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+  const ifLesson5 = await prisma.lesson.upsert({
+    where: { slug: "virtual-media-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/05-virtual-media-guide`,
+      repositoryPath: "docs/04-interfaces/05-virtual-media-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "virtual-media-guide",
+      title: "Virtual Media Guide",
+      description: "Remote media mounting",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/05-virtual-media-guide`,
+      repositoryPath: "docs/04-interfaces/05-virtual-media-guide.md",
+      displayMode: "RENDER",
+      content: "# Virtual Media Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+  const ifLesson6 = await prisma.lesson.upsert({
+    where: { slug: "console-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/06-console-guide`,
+      repositoryPath: "docs/04-interfaces/06-console-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "console-guide",
+      title: "Serial Console Guide",
+      description: "Serial over LAN (SOL)",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/06-console-guide`,
+      repositoryPath: "docs/04-interfaces/06-console-guide.md",
+      displayMode: "RENDER",
+      content: "# Console Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 20,
+      published: true,
+    },
+  });
+  const ifLesson7 = await prisma.lesson.upsert({
+    where: { slug: "ssh-security-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/07-ssh-security-guide`,
+      repositoryPath: "docs/04-interfaces/07-ssh-security-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "ssh-security-guide",
+      title: "SSH Security Guide",
+      description: "Secure shell configuration",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/04-interfaces/07-ssh-security-guide`,
+      repositoryPath: "docs/04-interfaces/07-ssh-security-guide.md",
+      displayMode: "RENDER",
+      content: "# SSH Security Guide",
+      difficulty: "INTERMEDIATE",
+      estimatedMinutes: 20,
+      published: true,
+    },
+  });
+
+  // Link interfaces lessons
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: interfacesPath.id, lessonId: ifLesson1.id } },
+    update: {},
+    create: { pathId: interfacesPath.id, lessonId: ifLesson1.id, order: 1 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: interfacesPath.id, lessonId: ifLesson2.id } },
+    update: {},
+    create: { pathId: interfacesPath.id, lessonId: ifLesson2.id, order: 2 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: interfacesPath.id, lessonId: ifLesson3.id } },
+    update: {},
+    create: { pathId: interfacesPath.id, lessonId: ifLesson3.id, order: 3 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: interfacesPath.id, lessonId: ifLesson4.id } },
+    update: {},
+    create: { pathId: interfacesPath.id, lessonId: ifLesson4.id, order: 4 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: interfacesPath.id, lessonId: ifLesson5.id } },
+    update: {},
+    create: { pathId: interfacesPath.id, lessonId: ifLesson5.id, order: 5 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: interfacesPath.id, lessonId: ifLesson6.id } },
+    update: {},
+    create: { pathId: interfacesPath.id, lessonId: ifLesson6.id, order: 6 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: interfacesPath.id, lessonId: ifLesson7.id } },
+    update: {},
+    create: { pathId: interfacesPath.id, lessonId: ifLesson7.id, order: 7 },
+  });
+
+  console.log("Created Interfaces lessons (7 lessons)");
+
+  // ============================================================================
+  // Advanced Topics Lessons
+  // ============================================================================
+  const advLesson1 = await prisma.lesson.upsert({
+    where: { slug: "mctp-pldm-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/01-mctp-pldm-guide`,
+      repositoryPath: "docs/05-advanced/01-mctp-pldm-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "mctp-pldm-guide",
+      title: "MCTP & PLDM Guide",
+      description: "Management Component Transport Protocol",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/01-mctp-pldm-guide`,
+      repositoryPath: "docs/05-advanced/01-mctp-pldm-guide.md",
+      displayMode: "RENDER",
+      content: "# MCTP & PLDM Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 45,
+      published: true,
+    },
+  });
+  const advLesson2 = await prisma.lesson.upsert({
+    where: { slug: "spdm-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/02-spdm-guide`,
+      repositoryPath: "docs/05-advanced/02-spdm-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "spdm-guide",
+      title: "SPDM Guide",
+      description: "Security Protocol and Data Model",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/02-spdm-guide`,
+      repositoryPath: "docs/05-advanced/02-spdm-guide.md",
+      displayMode: "RENDER",
+      content: "# SPDM Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 40,
+      published: true,
+    },
+  });
+  const advLesson3 = await prisma.lesson.upsert({
+    where: { slug: "firmware-update-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/03-firmware-update-guide`,
+      repositoryPath: "docs/05-advanced/03-firmware-update-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "firmware-update-guide",
+      title: "Firmware Update Guide",
+      description: "BMC and host firmware updates",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/03-firmware-update-guide`,
+      repositoryPath: "docs/05-advanced/03-firmware-update-guide.md",
+      displayMode: "RENDER",
+      content: "# Firmware Update Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 35,
+      published: true,
+    },
+  });
+  const advLesson4 = await prisma.lesson.upsert({
+    where: { slug: "intel-asd-acd-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/04-intel-asd-acd-guide`,
+      repositoryPath: "docs/05-advanced/04-intel-asd-acd-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "intel-asd-acd-guide",
+      title: "Intel ASD/ACD Guide",
+      description: "Intel At-Scale Debug",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/04-intel-asd-acd-guide`,
+      repositoryPath: "docs/05-advanced/04-intel-asd-acd-guide.md",
+      displayMode: "RENDER",
+      content: "# Intel ASD/ACD Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+  const advLesson5 = await prisma.lesson.upsert({
+    where: { slug: "amd-ihdt-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/05-amd-ihdt-guide`,
+      repositoryPath: "docs/05-advanced/05-amd-ihdt-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "amd-ihdt-guide",
+      title: "AMD IHDT Guide",
+      description: "AMD In-Hardware Debug Tool",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/05-amd-ihdt-guide`,
+      repositoryPath: "docs/05-advanced/05-amd-ihdt-guide.md",
+      displayMode: "RENDER",
+      content: "# AMD IHDT Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+  const advLesson6 = await prisma.lesson.upsert({
+    where: { slug: "logging-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/06-logging-guide`,
+      repositoryPath: "docs/05-advanced/06-logging-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "logging-guide",
+      title: "Logging Guide",
+      description: "Error logging and event management",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/06-logging-guide`,
+      repositoryPath: "docs/05-advanced/06-logging-guide.md",
+      displayMode: "RENDER",
+      content: "# Logging Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 25,
+      published: true,
+    },
+  });
+  const advLesson7 = await prisma.lesson.upsert({
+    where: { slug: "sdr-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/07-sdr-guide`,
+      repositoryPath: "docs/05-advanced/07-sdr-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "sdr-guide",
+      title: "SDR Guide",
+      description: "Sensor Data Records",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/07-sdr-guide`,
+      repositoryPath: "docs/05-advanced/07-sdr-guide.md",
+      displayMode: "RENDER",
+      content: "# SDR Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+  const advLesson8 = await prisma.lesson.upsert({
+    where: { slug: "linux-debug-tools" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/08-linux-debug-tools-guide`,
+      repositoryPath: "docs/05-advanced/08-linux-debug-tools-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "linux-debug-tools",
+      title: "Linux Debug Tools",
+      description: "Debugging techniques for OpenBMC",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/08-linux-debug-tools-guide`,
+      repositoryPath: "docs/05-advanced/08-linux-debug-tools-guide.md",
+      displayMode: "RENDER",
+      content: "# Linux Debug Tools",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 35,
+      published: true,
+    },
+  });
+  const advLesson9 = await prisma.lesson.upsert({
+    where: { slug: "espi-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/09-espi-guide`,
+      repositoryPath: "docs/05-advanced/09-espi-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "espi-guide",
+      title: "eSPI Guide",
+      description: "Enhanced Serial Peripheral Interface",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/09-espi-guide`,
+      repositoryPath: "docs/05-advanced/09-espi-guide.md",
+      displayMode: "RENDER",
+      content: "# eSPI Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+  const advLesson10 = await prisma.lesson.upsert({
+    where: { slug: "unit-testing-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/10-unit-testing-guide`,
+      repositoryPath: "docs/05-advanced/10-unit-testing-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "unit-testing-guide",
+      title: "Unit Testing Guide",
+      description: "Testing OpenBMC components",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/10-unit-testing-guide`,
+      repositoryPath: "docs/05-advanced/10-unit-testing-guide.md",
+      displayMode: "RENDER",
+      content: "# Unit Testing Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+  const advLesson11 = await prisma.lesson.upsert({
+    where: { slug: "robot-framework-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/11-robot-framework-guide`,
+      repositoryPath: "docs/05-advanced/11-robot-framework-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "robot-framework-guide",
+      title: "Robot Framework Guide",
+      description: "Integration testing with Robot",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/05-advanced/11-robot-framework-guide`,
+      repositoryPath: "docs/05-advanced/11-robot-framework-guide.md",
+      displayMode: "RENDER",
+      content: "# Robot Framework Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 35,
+      published: true,
+    },
+  });
+
+  // Link advanced lessons
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson1.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson1.id, order: 1 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson2.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson2.id, order: 2 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson3.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson3.id, order: 3 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson4.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson4.id, order: 4 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson5.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson5.id, order: 5 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson6.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson6.id, order: 6 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson7.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson7.id, order: 7 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson8.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson8.id, order: 8 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson9.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson9.id, order: 9 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson10.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson10.id, order: 10 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: advancedPath.id, lessonId: advLesson11.id } },
+    update: {},
+    create: { pathId: advancedPath.id, lessonId: advLesson11.id, order: 11 },
+  });
+
+  console.log("Created Advanced Topics lessons (11 lessons)");
+
+  // ============================================================================
+  // Platform Porting Lessons
+  // ============================================================================
+  const portLesson1 = await prisma.lesson.upsert({
+    where: { slug: "porting-reference" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/01-porting-reference`,
+      repositoryPath: "docs/06-porting/01-porting-reference.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "porting-reference",
+      title: "Porting Reference",
+      description: "OpenBMC porting overview",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/01-porting-reference`,
+      repositoryPath: "docs/06-porting/01-porting-reference.md",
+      displayMode: "RENDER",
+      content: "# Porting Reference",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 40,
+      published: true,
+    },
+  });
+  const portLesson2 = await prisma.lesson.upsert({
+    where: { slug: "device-tree-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/03-device-tree`,
+      repositoryPath: "docs/06-porting/03-device-tree.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "device-tree-guide",
+      title: "Device Tree Guide",
+      description: "Hardware description for Linux",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/03-device-tree`,
+      repositoryPath: "docs/06-porting/03-device-tree.md",
+      displayMode: "RENDER",
+      content: "# Device Tree Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 45,
+      published: true,
+    },
+  });
+  const portLesson3 = await prisma.lesson.upsert({
+    where: { slug: "uboot-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/04-uboot`,
+      repositoryPath: "docs/06-porting/04-uboot.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "uboot-guide",
+      title: "U-Boot Guide",
+      description: "Bootloader configuration",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/04-uboot`,
+      repositoryPath: "docs/06-porting/04-uboot.md",
+      displayMode: "RENDER",
+      content: "# U-Boot Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 40,
+      published: true,
+    },
+  });
+  const portLesson4 = await prisma.lesson.upsert({
+    where: { slug: "verification-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/05-verification`,
+      repositoryPath: "docs/06-porting/05-verification.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "verification-guide",
+      title: "Verification Guide",
+      description: "Testing your port",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/05-verification`,
+      repositoryPath: "docs/06-porting/05-verification.md",
+      displayMode: "RENDER",
+      content: "# Verification Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 30,
+      published: true,
+    },
+  });
+  const portLesson5 = await prisma.lesson.upsert({
+    where: { slug: "arm-platform-guide" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/06-arm-platform-guide`,
+      repositoryPath: "docs/06-porting/06-arm-platform-guide.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "arm-platform-guide",
+      title: "ARM Platform Guide",
+      description: "ARM-specific porting",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/06-arm-platform-guide`,
+      repositoryPath: "docs/06-porting/06-arm-platform-guide.md",
+      displayMode: "RENDER",
+      content: "# ARM Platform Guide",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 35,
+      published: true,
+    },
+  });
+  const portLesson6 = await prisma.lesson.upsert({
+    where: { slug: "entity-manager-advanced" },
+    update: {
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/07-entity-manager-advanced`,
+      repositoryPath: "docs/06-porting/07-entity-manager-advanced.md",
+      displayMode: "RENDER",
+    },
+    create: {
+      slug: "entity-manager-advanced",
+      title: "Entity Manager Advanced",
+      description: "Advanced Entity Manager configuration",
+      sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/07-entity-manager-advanced`,
+      repositoryPath: "docs/06-porting/07-entity-manager-advanced.md",
+      displayMode: "RENDER",
+      content: "# Entity Manager Advanced",
+      difficulty: "ADVANCED",
+      estimatedMinutes: 40,
+      published: true,
+    },
+  });
+
+  // Link porting lessons (recipe-basics is already order 1)
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: portingPath.id, lessonId: portLesson1.id } },
+    update: {},
+    create: { pathId: portingPath.id, lessonId: portLesson1.id, order: 1 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: portingPath.id, lessonId: recipeLesson1.id } },
+    update: {},
+    create: { pathId: portingPath.id, lessonId: recipeLesson1.id, order: 2 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: portingPath.id, lessonId: portLesson2.id } },
+    update: {},
+    create: { pathId: portingPath.id, lessonId: portLesson2.id, order: 3 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: portingPath.id, lessonId: portLesson3.id } },
+    update: {},
+    create: { pathId: portingPath.id, lessonId: portLesson3.id, order: 4 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: portingPath.id, lessonId: portLesson4.id } },
+    update: {},
+    create: { pathId: portingPath.id, lessonId: portLesson4.id, order: 5 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: portingPath.id, lessonId: portLesson5.id } },
+    update: {},
+    create: { pathId: portingPath.id, lessonId: portLesson5.id, order: 6 },
+  });
+  await prisma.pathLesson.upsert({
+    where: { pathId_lessonId: { pathId: portingPath.id, lessonId: portLesson6.id } },
+    update: {},
+    create: { pathId: portingPath.id, lessonId: portLesson6.id, order: 7 },
+  });
+
+  console.log("Created Platform Porting lessons (7 lessons)");
 
   // Create quiz questions
   await prisma.quizQuestion.upsert({
