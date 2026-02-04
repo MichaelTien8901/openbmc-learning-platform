@@ -125,7 +125,7 @@
 - [x] 9.4 Create learning path management pages
 - [x] 9.5 Implement drag-and-drop lesson reordering
 - [x] 9.6 Add prerequisite path selector
-- [ ] 9.7 Create documentation import tool
+- [x] 9.7 Create documentation import tool
 - [ ] 9.8 Implement bulk import from directory
 - [ ] 9.9 Add import conflict resolution UI
 - [ ] 9.10 Create code exercise editor with validation script

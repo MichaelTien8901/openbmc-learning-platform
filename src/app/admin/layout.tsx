@@ -49,6 +49,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 >
                   Quizzes
                 </Link>
+                <Link
+                  href="/admin/import"
+                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                >
+                  Import
+                </Link>
               </div>
             </div>
             <div className="flex items-center space-x-4">
