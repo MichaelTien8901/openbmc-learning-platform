@@ -74,7 +74,7 @@
 - [x] 6.9 Add lesson navigation (next/previous buttons)
 - [x] 6.10 Create path progress indicator bar
 - [x] 6.11 Implement bookmark functionality
-- [ ] 6.12 Add note-taking panel with save/export
+- [x] 6.12 Add note-taking panel with save/export
 - [ ] 6.13 Ensure keyboard navigation accessibility
 - [ ] 6.14 Add screen reader ARIA labels
 - [ ] 6.15 Implement responsive mobile layout

@@ -10,6 +10,7 @@ import { TableOfContents } from "@/components/lessons/table-of-contents";
 import { PathProgressBar } from "@/components/lessons/path-progress-bar";
 import { QuizPlayer } from "@/components/lessons/quiz-player";
 import { BookmarkButton } from "@/components/lessons/bookmark-button";
+import { NotesPanel } from "@/components/lessons/notes-panel";
 
 interface PathLessonInfo {
   slug: string;
@@ -217,6 +218,9 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string 
           }
         }}
       />
+
+      {/* Notes Panel */}
+      <NotesPanel lessonId={lesson.id} lessonTitle={lesson.title} />
 
       {/* Navigation */}
       <div className="flex items-center justify-between border-t border-gray-200 pt-6 dark:border-gray-800">
