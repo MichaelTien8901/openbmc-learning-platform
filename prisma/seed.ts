@@ -149,7 +149,7 @@ async function main() {
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/01-introduction`,
       repositoryPath: "docs/01-getting-started/01-introduction.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "what-is-openbmc",
@@ -157,7 +157,7 @@ async function main() {
       description: "Introduction to OpenBMC and its role in server management",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/01-introduction`,
       repositoryPath: "docs/01-getting-started/01-introduction.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: `# What is OpenBMC?
 
 OpenBMC is an open-source project that provides a Linux distribution for Board Management Controllers (BMCs). It's designed to enable a more open, secure, and customizable approach to server management.
@@ -197,7 +197,7 @@ In the following lessons, we'll explore the OpenBMC architecture in detail and s
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/01-openbmc-overview`,
       repositoryPath: "docs/02-architecture/01-openbmc-overview.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "openbmc-architecture",
@@ -205,7 +205,7 @@ In the following lessons, we'll explore the OpenBMC architecture in detail and s
       description: "Deep dive into the components that make up OpenBMC",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/01-openbmc-overview`,
       repositoryPath: "docs/02-architecture/01-openbmc-overview.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: `# OpenBMC Architecture
 
 Understanding the OpenBMC architecture is essential for effective development and troubleshooting.
@@ -269,7 +269,7 @@ Now that you understand the architecture, let's set up your development environm
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/02-environment-setup`,
       repositoryPath: "docs/01-getting-started/02-environment-setup.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "development-environment-setup",
@@ -277,7 +277,7 @@ Now that you understand the architecture, let's set up your development environm
       description: "Configure your workstation for OpenBMC development",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/02-environment-setup`,
       repositoryPath: "docs/01-getting-started/02-environment-setup.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: `# Setting Up Your Development Environment
 
 This lesson guides you through setting up a complete OpenBMC development environment.
@@ -361,7 +361,7 @@ Congratulations! You now have a working OpenBMC development environment.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/03-first-build`,
       repositoryPath: "docs/01-getting-started/03-first-build.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "first-build",
@@ -369,7 +369,7 @@ Congratulations! You now have a working OpenBMC development environment.
       description: "Build your first OpenBMC image from source",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/03-first-build`,
       repositoryPath: "docs/01-getting-started/03-first-build.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: "# Your First OpenBMC Build\n\nLearn how to build OpenBMC from source.",
       difficulty: "BEGINNER",
       estimatedMinutes: 30,
@@ -383,7 +383,7 @@ Congratulations! You now have a working OpenBMC development environment.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/04-development-workflow`,
       repositoryPath: "docs/01-getting-started/04-development-workflow.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "development-workflow",
@@ -391,7 +391,7 @@ Congratulations! You now have a working OpenBMC development environment.
       description: "Learn the OpenBMC development workflow and best practices",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/04-development-workflow`,
       repositoryPath: "docs/01-getting-started/04-development-workflow.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: "# Development Workflow\n\nLearn the recommended development workflow.",
       difficulty: "BEGINNER",
       estimatedMinutes: 25,
@@ -404,7 +404,7 @@ Congratulations! You now have a working OpenBMC development environment.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/05-qemu-build`,
       repositoryPath: "docs/01-getting-started/05-qemu-build.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "qemu-development",
@@ -412,7 +412,7 @@ Congratulations! You now have a working OpenBMC development environment.
       description: "Set up and use QEMU for OpenBMC development and testing",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/01-getting-started/05-qemu-build`,
       repositoryPath: "docs/01-getting-started/05-qemu-build.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: "# QEMU Development\n\nLearn to use QEMU for testing OpenBMC.",
       difficulty: "BEGINNER",
       estimatedMinutes: 35,
@@ -466,7 +466,7 @@ Congratulations! You now have a working OpenBMC development environment.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/02-dbus-guide`,
       repositoryPath: "docs/02-architecture/02-dbus-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "dbus-introduction",
@@ -474,7 +474,7 @@ Congratulations! You now have a working OpenBMC development environment.
       description: "Learn the fundamentals of D-Bus communication",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/02-dbus-guide`,
       repositoryPath: "docs/02-architecture/02-dbus-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: `# Introduction to D-Bus
 
 D-Bus is a message bus system that provides a way for applications to communicate with each other.
@@ -522,7 +522,7 @@ In the following lessons, we'll explore methods, signals, and properties in deta
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/03-state-manager-guide`,
       repositoryPath: "docs/02-architecture/03-state-manager-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "state-manager",
@@ -530,7 +530,7 @@ In the following lessons, we'll explore methods, signals, and properties in deta
       description: "Learn how OpenBMC manages system states via D-Bus",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/02-architecture/03-state-manager-guide`,
       repositoryPath: "docs/02-architecture/03-state-manager-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: "# State Manager Guide\n\nLearn about OpenBMC state management.",
       difficulty: "INTERMEDIATE",
       estimatedMinutes: 30,
@@ -558,7 +558,7 @@ In the following lessons, we'll explore methods, signals, and properties in deta
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/01-dbus-sensors-guide`,
       repositoryPath: "docs/03-core-services/01-dbus-sensors-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "sensor-overview",
@@ -566,7 +566,7 @@ In the following lessons, we'll explore methods, signals, and properties in deta
       description: "Understanding the sensor architecture in OpenBMC",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/01-dbus-sensors-guide`,
       repositoryPath: "docs/03-core-services/01-dbus-sensors-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: `# Sensor Overview in OpenBMC
 
 OpenBMC provides comprehensive sensor monitoring capabilities for hardware management.
@@ -604,7 +604,7 @@ busctl tree xyz.openbmc_project.HwmonTempSensor
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/03-entity-manager-guide`,
       repositoryPath: "docs/03-core-services/03-entity-manager-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "sensor-configuration",
@@ -612,7 +612,7 @@ busctl tree xyz.openbmc_project.HwmonTempSensor
       description: "Learn how to configure and customize sensor behavior",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/03-entity-manager-guide`,
       repositoryPath: "docs/03-core-services/03-entity-manager-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: `# Configuring Sensors
 
 This lesson covers sensor configuration in OpenBMC.
@@ -655,7 +655,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/02-hwmon-sensors-guide`,
       repositoryPath: "docs/03-core-services/02-hwmon-sensors-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "hwmon-sensors",
@@ -663,7 +663,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
       description: "Working with Linux hwmon sensors in OpenBMC",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/02-hwmon-sensors-guide`,
       repositoryPath: "docs/03-core-services/02-hwmon-sensors-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: "# Hwmon Sensors Guide\n\nLearn about hwmon sensor integration.",
       difficulty: "INTERMEDIATE",
       estimatedMinutes: 25,
@@ -676,7 +676,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/04-fan-control-guide`,
       repositoryPath: "docs/03-core-services/04-fan-control-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "fan-control",
@@ -684,7 +684,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
       description: "Configure and manage fan control in OpenBMC",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/04-fan-control-guide`,
       repositoryPath: "docs/03-core-services/04-fan-control-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: "# Fan Control Guide\n\nLearn about fan control and thermal management.",
       difficulty: "INTERMEDIATE",
       estimatedMinutes: 30,
@@ -697,7 +697,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/05-power-management-guide`,
       repositoryPath: "docs/03-core-services/05-power-management-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "power-management",
@@ -705,7 +705,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
       description: "Understanding power management in OpenBMC",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/05-power-management-guide`,
       repositoryPath: "docs/03-core-services/05-power-management-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: "# Power Management Guide\n\nLearn about power management services.",
       difficulty: "INTERMEDIATE",
       estimatedMinutes: 25,
@@ -718,7 +718,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/11-inventory-manager-guide`,
       repositoryPath: "docs/03-core-services/11-inventory-manager-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "inventory-manager",
@@ -726,7 +726,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
       description: "Managing hardware inventory in OpenBMC",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/03-core-services/11-inventory-manager-guide`,
       repositoryPath: "docs/03-core-services/11-inventory-manager-guide.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: "# Inventory Manager Guide\n\nLearn about inventory management.",
       difficulty: "INTERMEDIATE",
       estimatedMinutes: 20,
@@ -778,7 +778,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
     update: {
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/02-machine-layer`,
       repositoryPath: "docs/06-porting/02-machine-layer.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
     },
     create: {
       slug: "recipe-basics",
@@ -786,7 +786,7 @@ OpenBMC reads hardware sensors via the Linux hwmon subsystem.
       description: "Introduction to writing Yocto recipes for OpenBMC",
       sourceUrl: `${GITHUB_PAGES_BASE}/docs/06-porting/02-machine-layer`,
       repositoryPath: "docs/06-porting/02-machine-layer.md",
-      displayMode: "IFRAME",
+      displayMode: "RENDER",
       content: `# Yocto Recipe Basics
 
 Learn the fundamentals of writing Yocto recipes for OpenBMC.

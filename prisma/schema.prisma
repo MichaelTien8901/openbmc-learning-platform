@@ -145,7 +145,7 @@ model Lesson {
   // GitHub Content Delivery (replaces NotebookLM)
   sourceUrl       String?     // GitHub Pages URL for content
   repositoryPath  String?     // Path in openbmc-guide-tutorial repo
-  displayMode     DisplayMode @default(IFRAME)
+  displayMode     DisplayMode @default(RENDER)
 
   // Relations
   pathLessons   PathLesson[]
