@@ -1,6 +1,7 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { ServiceStatusBannerWrapper } from "@/components/layout/service-status-banner-wrapper";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await getSession();
@@ -69,6 +70,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </div>
       </nav>
+      <ServiceStatusBannerWrapper />
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
     </div>
   );

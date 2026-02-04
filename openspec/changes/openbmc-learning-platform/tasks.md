@@ -115,7 +115,7 @@
 - [ ] 8.14 Add fallback behavior for Q&A (disabled state)
 - [x] 8.15 Add fallback behavior for TTS (text-only mode)
 - [ ] 8.16 Implement usage analytics tracking
-- [ ] 8.17 Create degraded mode UI notifications
+- [x] 8.17 Create degraded mode UI notifications
 
 ## 9. Content Management
 
