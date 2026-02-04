@@ -45,9 +45,19 @@ export function ServiceStatusProvider({ children }: { children: ReactNode }) {
       const response = await fetch("/api/health");
       const data = await response.json();
 
+      // Parse database status from health endpoint response
+      // Health endpoint returns: { status, checks: { database: { status: "healthy"|"degraded"|"unhealthy" } } }
+      let databaseStatus: ServiceStatus["database"] = "unavailable";
+      const dbCheck = data.checks?.database?.status;
+      if (dbCheck === "healthy") {
+        databaseStatus = "healthy";
+      } else if (dbCheck === "degraded" || dbCheck === "slow") {
+        databaseStatus = "degraded";
+      }
+
       const newStatus: ServiceStatus = {
-        database: data.success && data.data?.database ? "healthy" : "unavailable",
-        notebookLm: "unavailable", // NotebookLM not yet implemented
+        database: databaseStatus,
+        notebookLm: "unavailable", // NotebookLM browser automation - not exposed via API
         tts:
           typeof window !== "undefined" && "speechSynthesis" in window ? "healthy" : "unavailable",
         sandbox: "unavailable", // Sandbox not yet implemented
